@@ -3,7 +3,7 @@
 ##################################################################
 #### Preliminary ####
 # Load functions
-sapply(c("code/EM_MLE.R","code/EM_CHMM.R","code/EM_FHMM.R","code/EM_Oracle.R"), source)
+sapply(c("code/EM_MLE.R","code/EM_MPLE.R","code/EM_FHMM.R","code/EM_Oracle.R"), source)
 
 # Required library to load data 
 library(httr)
