@@ -1,6 +1,6 @@
 # Data Files
 
-This folder contains the data files used in the "Clustered Hidden Markov Models". The datasets are stored in Rdata format and are automatically loaded by the corresponding R scripts.
+This folder contains the data files used in the "Clustered Hidden Markov Models" (J. Bok & S. Shin). The datasets are stored in Rdata format and are automatically loaded by the corresponding R scripts.
 
 ---
 
