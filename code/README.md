@@ -29,10 +29,10 @@ This folder contains R scripts used in the "Clustered Hidden Markov Models" (J. 
   Implements an EM algorithm for Oracle Estimation (OE) of a stationary Hidden Markov Model (HMM).  
   - `EM_Oracle_Sim{i}_A{j}`: Oracle estimation function for Simulation `{i}`, using the `{j}`-th transition matrix.
 
-#### 2-4. EM Algorithm for MLE and OE of FHMM
+#### 2-4. EM Algorithm for OE of FHMM
 - **File:** `EM_FHMM.R`  
 - **Description:**  
-  Implements an EM algorithm for both the MLE and OE of an FHMM.  
+  Implements an EM algorithm for the OE of an FHMM.  
   - `fhmm`: Function for OE of FHMM.
 
 ---
