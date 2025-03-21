@@ -17,7 +17,7 @@ This folder contains R scripts used in the "Clustered Hidden Markov Models" (J. 
   Implements an EM algorithm for the Maximum Likelihood Estimation (MLE) of CHMM via the `EM_MLE` function.
 
 #### 2-2. EM Algorithm for MPLE of CHMM
-- **File:** `EM_CHMM.R`  
+- **File:** `EM_MPLE.R`  
 - **Description:**  
   Implements an EM algorithm for the Maximum Penalized Likelihood Estimation (MPLE) of CHMM.  
   - `EM_MPLE_singleLambda`: EM algorithm using a single penalty parameter.  
