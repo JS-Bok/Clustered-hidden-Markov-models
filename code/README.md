@@ -14,25 +14,25 @@ This folder contains R scripts used in the "Clustered Hidden Markov Models" (J. 
 #### 2-1. EM Algorithm for MLE of CHMM
 - **File:** `EM_MLE.R`  
 - **Description:**  
-  Implements an EM algorithm for the Maximum Likelihood Estimation (MLE) of CHMM via the `EM_MLE` function.
+  Implements an EM algorithm for the Maximum Likelihood Estimation of CHMM via the `EM_MLE` function.
 
 #### 2-2. EM Algorithm for MPLE of CHMM
 - **File:** `EM_MPLE.R`  
 - **Description:**  
-  Implements an EM algorithm for the Maximum Penalized Likelihood Estimation (MPLE) of CHMM.  
+  Implements an EM algorithm for the Maximum Penalized Likelihood Estimation of CHMM.  
   - `EM_MPLE_singleLambda`: EM algorithm using a single penalty parameter.  
   - `EM_MPLE`: EM algorithm using multiple penalty parameters.
 
 #### 2-3. EM Algorithm for OE of Stationary HMM
 - **File:** `EM_Oracle.R`  
 - **Description:**  
-  Implements an EM algorithm for Oracle Estimation (OE) of a stationary Hidden Markov Model (HMM).  
+  Implements an EM algorithm for Oracle Estimation of CHMM.  
   - `EM_Oracle_Sim{i}_A{j}`: Oracle estimation function for Simulation `{i}`, using the `{j}`-th transition matrix.
 
 #### 2-4. EM Algorithm for OE of FHMM
 - **File:** `EM_FHMM.R`  
 - **Description:**  
-  Implements an EM algorithm for the OE of an FHMM.  
+  Implements an EM algorithm for the OE of FHMM.  
   - `fhmm`: Function for OE of FHMM.
 
 ---
