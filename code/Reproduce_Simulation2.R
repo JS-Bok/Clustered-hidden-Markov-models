@@ -102,9 +102,6 @@ Model1_result <- mclapply(Sim2_Model1, function(x){
 }, mc.cores = core_num)
 
 
-save(Model1_result, file = "Sim2-Model1_result.Rdata")
-rm(Model1_result)
-
 
 
 
@@ -199,9 +196,6 @@ Model2_result <- mclapply(Sim2_Model2, function(x){
   result_6000 <- model_measurements(x[1:6000], dist_class=dist_class, A_true=A_true, phi_true=phi_true)
   return(list(n_4000=result_4000, n_5000=result_5000,n_6000=result_6000))
 }, mc.cores = core_num)
-
-save(Model2_result, file = "Sim2-Model2_result.Rdata")
-rm(Model2_result)
 
 
 
@@ -305,8 +299,6 @@ Model3_result <- mclapply(Sim2_Model3, function(x){
   return(list(n_4000=result_4000, n_5000=result_5000,n_6000=result_6000))
 }, mc.cores = core_num)
 
-save(Model3_result, file = "Sim2-Model3_result.Rdata")
-rm(Model3_result)
 
 
 
@@ -410,8 +402,8 @@ Model4_result <- mclapply(Sim2_Model4[1:2], function(x){
 
 
 
-save(Model4_result, file = "Sim2-Model4_result.Rdata")
-rm(Model4_result)
+save(Model1_result, Model2_result, Model3_result, Model4_result, file = "results/Simulation2.Rdata")
+
 
 
 

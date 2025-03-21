@@ -296,7 +296,7 @@ Model4_result <- mclapply(Sim1_Model4[1:2], function(x){
 }, mc.cores = core_num)
 
 
-
+save(Model1_result, Model2_result, Model3_result, Model4_result, file = "results/Simulation1.Rdata")
 
 
 

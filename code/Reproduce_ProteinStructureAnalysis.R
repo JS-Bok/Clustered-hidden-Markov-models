@@ -39,3 +39,8 @@ Protein_MPLE <- EM_MPLE(Protein_descriptor,
 
 #### FHMM ####
 Protein_FHMM <- fhmm(Protein_descriptor, M=3, K=3, tol=1e-5)
+
+
+save(Protein_MLE, Protein_MPLE, Protein_FHMM, file = "results/Protein_structure_analysis.Rdata")
+
+
