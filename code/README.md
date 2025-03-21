@@ -1,4 +1,4 @@
-## Supplementary R Scripts
+## R Scripts
 
 This folder contains R scripts used in the "Clustered Hidden Markov Models" (J. Bok & S. Shin). Each script provides detailed information on its main functions, including input/output parameters.
 
