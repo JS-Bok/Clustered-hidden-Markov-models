@@ -14,7 +14,8 @@ The following files contain the models/data for Simulation 1:
 - **Sim1_Model3.Rdata**  
 - **Sim1_Model4.Rdata**  
 
-*Description:* These files represent different model configurations or simulation outputs for Simulation 1.
+- **Description:**  
+  These files represent different model configurations or simulation outputs for Simulation 1.
 
 ---
 
@@ -26,14 +27,16 @@ The following files contain the models/data for Simulation 2:
 - **Sim2_Model3.Rdata**  
 - **Sim2_Model4.Rdata**  
 
-*Description:* These files represent different model configurations or simulation outputs for Simulation 2.
+- **Description:**  
+  These files represent different model configurations or simulation outputs for Simulation 2.
 
 ---
 
 ## Protein Data
 - **Protein_data.Rdata**  
 
-*Description:* This file contains the protein dataset used in the Protein Structure Analysis.
+- **Description:**  
+  This file contains the protein dataset used in the Protein Structure Analysis.
 
 ---
 
