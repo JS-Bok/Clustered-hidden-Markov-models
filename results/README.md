@@ -5,19 +5,22 @@ This folder contains the results from the simulations and protein structure anal
 ---
 
 ## Simulation Results
+#### 2-1. Simulation 1 results
+- **File:** `Simulation1.Rdata`  
+- **Description:**  
+  Results from Simulation 1.
 
-- **Simulation1.Rdata**  
-  *Description:* Contains the results from Simulation 1.
-
-- **Simulation2.Rdata**  
-  *Description:* Contains the results from Simulation 2.
-
+#### 2-1. Simulation 2 results
+- **File:** `Simulation2.Rdata`  
+- **Description:**  
+  Results from Simulation 2.
+  
 ---
 
 ## Protein Structure Analysis Results
-
-- **Protein_structure_analysis.Rdata**  
-  *Description:* Contains the results from the Protein Structure Analysis.
+- **File:** `Protein_structure_analysis.Rdata`  
+- **Description:**  
+  Results from the Protein Structure Analysis.
 
 ---
 
