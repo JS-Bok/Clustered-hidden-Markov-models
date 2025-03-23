@@ -20,7 +20,7 @@ This folder contains the results from the simulations and protein structure anal
 ## Protein Structure Analysis Results
 - **File:** `Protein_structure_analysis.Rdata`  
 - **Description:**  
-  Results from the Protein Structure Analysis.
+  Results from the protein structure analysis.
 
 ---
 
