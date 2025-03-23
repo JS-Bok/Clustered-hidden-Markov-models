@@ -62,4 +62,3 @@ All datasets are stored [here](https://github.com/JS-Bok/Clustered-hidden-Markov
 - **File:** `Code_for_figures.R`  
 - **Description:**  
   Generates the figures for the Protein Structure Analysis.  
-- **Prerequisite:** Output from `Reproduce_ProteinStructureAnalysis.R` is required.
