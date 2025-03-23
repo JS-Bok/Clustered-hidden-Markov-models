@@ -7,36 +7,27 @@ This folder contains the data files used in the "Clustered Hidden Markov Models"
 ---
 
 ## Simulation 1 Data
-The following files contain the models/data for Simulation 1:
-
-- **Sim1_Model1.Rdata**  
-- **Sim1_Model2.Rdata**  
-- **Sim1_Model3.Rdata**  
-- **Sim1_Model4.Rdata**  
+- **Files:** `Sim1_Model1.Rdata`, `Sim1_Model2.Rdata`, `Sim1_Model3.Rdata`, `Sim1_Model4.Rdata`
 
 - **Description:**  
-  These files represent different model configurations or simulation outputs for Simulation 1.
+  Datasets used for Simulation 1.
 
 ---
 
 ## Simulation 2 Data
-The following files contain the models/data for Simulation 2:
-
-- **Sim2_Model1.Rdata**  
-- **Sim2_Model2.Rdata**  
-- **Sim2_Model3.Rdata**  
-- **Sim2_Model4.Rdata**  
+- **Files:** `Sim2_Model1.Rdata`, `Sim2_Model2.Rdata`, `Sim2_Model3.Rdata`, `Sim2_Model4.Rdata`
 
 - **Description:**  
-  These files represent different model configurations or simulation outputs for Simulation 2.
+  Datasets used for Simulation 2.
+
 
 ---
 
 ## Protein Data
-- **Protein_data.Rdata**  
+- **File:** `Protein_data.Rdata`
 
 - **Description:**  
-  This file contains the protein dataset used in the Protein Structure Analysis.
+  Dataset used in the protein structure analysis.
 
 ---
 
