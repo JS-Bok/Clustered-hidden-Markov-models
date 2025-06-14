@@ -6,23 +6,11 @@
 sapply(c("code/EM_MLE.R","code/EM_MPLE.R","code/EM_FHMM.R","code/EM_Oracle.R"), source)
 
 # Required library to load data 
-library(httr)
 library(parallel) # Use multicore.
 core_num <- 25 # Set number of cores.
 
-# Base directory of data
-home_dir <- "https://raw.githubusercontent.com/JS-Bok/Clustered-hidden-Markov-models/main/data/"
-
-# Raw URL of the file
-file_url <- paste0(home_dir,"Protein_data.Rdata")
-
 # Load data
-temp_file <- tempfile(fileext = ".Rdata")
-response <- GET(file_url)
-writeBin(content(response, as = "raw"), temp_file)
-load(temp_file)
-rm(response)
-unlink(temp_file)
+load("data/Protein_data.Rdata")
 Protein_descriptor <- lapply(Protein_data, function(x) x$descriptor_vec)
 
 #### MLE ####

@@ -2,34 +2,18 @@
 #### Code for generating figures in protein structure analysis ####
 ###################################################################
 # Required libraries
-if (!require('tidyverse', quietly = TRUE)) { install.packages('tidyverse') } 
 library('tidyverse')
-if (!require('gridExtra', quietly = TRUE)) { install.packages('gridExtra') } 
 library('gridExtra')
-if (!require('magick', quietly = TRUE)) { install.packages('magick') } 
 library('magick')
-library(ggplot2)
-library(grid)
-
-# Required library to load data 
-library(httr)
-library(parallel) # Use multicore.
+library('ggplot2')
+library('grid')
+library('parallel') # Use multicore.
 core_num <- 25 # Set number of cores.
 
 # Load data
-home_dir <- "https://raw.githubusercontent.com/JS-Bok/Clustered-hidden-Markov-models/main/results/"
-
-file_url <- paste0(home_dir,"Protein_structure_analysis.Rdata")
-
-temp_file <- tempfile(fileext = ".Rdata")
-response <- GET(file_url)
-writeBin(content(response, as = "raw"), temp_file)
-load(temp_file)
-rm(response)
-unlink(temp_file)
-
 source("code/Auxiliary_Functions.R")
 load("data/Protein_data.Rdata")
+load("results/Protein_structure_analysis.Rdata")
 
 #### Reconstruct hidden sequences and match with secondary structure ####
 # Data load
@@ -118,7 +102,7 @@ SS_match <- mapply(function(x,y,z){data.frame(original=x$original, clustered=x$c
 #### Code generating Figure S1 ####
 figS1 <- round(A,3)*100
 colnames(figS1) <- 1:27
-write.csv(figS1, "result/Figure_S1.csv")
+write.csv(figS1, "results/Figure_S1.csv")
 
 
 
@@ -160,7 +144,7 @@ stacked_plot_original <- ggplot(SS_match_combined, aes(x = original, fill = SS))
         axis.title.x = element_blank(), 
         axis.title.y = element_blank())
 
-ggsave("result/Figure_3-original.pdf", stacked_plot_original, width = 7, height = 6, units = "in", dpi = 600)
+ggsave("results/Figure_3-original.pdf", stacked_plot_original, width = 7, height = 6, units = "in", dpi = 600)
 
 
 stacked_plot_clustered <- ggplot(SS_match_combined, aes(x = clustered, fill = SS)) +
@@ -171,7 +155,7 @@ stacked_plot_clustered <- ggplot(SS_match_combined, aes(x = clustered, fill = SS
         axis.title.y = element_blank())+
   labs(fill = "Secondary structure") 
 
-ggsave("result/Figure_3-clustered.pdf", stacked_plot_clustered, width = 7, height = 6, units = "in", dpi = 600)
+ggsave("results/Figure_3-clustered.pdf", stacked_plot_clustered, width = 7, height = 6, units = "in", dpi = 600)
 
 
 #### Code generating Figure S2 ####
@@ -215,7 +199,7 @@ stacked_plot_fhmm_x1 <- ggplot(SS_match_combined, aes(x = fhmm_x1, fill = SS)) +
         axis.title.x = element_blank(), 
         axis.title.y = element_blank())
 
-ggsave("result/Figure_S2-x1.pdf", stacked_plot_fhmm_x1, width = 1.5, height = 6, units = "in", dpi = 600)
+ggsave("results/Figure_S2-x1.pdf", stacked_plot_fhmm_x1, width = 1.5, height = 6, units = "in", dpi = 600)
 
 
 stacked_plot_fhmm_x2 <- ggplot(SS_match_combined, aes(x = fhmm_x2, fill = SS)) +
@@ -226,7 +210,7 @@ stacked_plot_fhmm_x2 <- ggplot(SS_match_combined, aes(x = fhmm_x2, fill = SS)) +
         axis.title.x = element_blank(), 
         axis.title.y = element_blank())
 
-ggsave("result/Figure_S2-x2.pdf", stacked_plot_fhmm_x2, width = 1.5, height = 6, units = "in", dpi = 600)
+ggsave("results/Figure_S2-x2.pdf", stacked_plot_fhmm_x2, width = 1.5, height = 6, units = "in", dpi = 600)
 
 stacked_plot_fhmm_x3 <- ggplot(SS_match_combined, aes(x = fhmm_x3, fill = SS)) +
   geom_bar(position = "stack") +
@@ -236,12 +220,10 @@ stacked_plot_fhmm_x3 <- ggplot(SS_match_combined, aes(x = fhmm_x3, fill = SS)) +
         axis.title.y = element_blank())+
   labs(fill = "Secondary structure") 
 
-ggsave("result/Figure_S2-x3.pdf", stacked_plot_fhmm_x3, width = 3.36, height = 6, units = "in", dpi = 600)
+ggsave("results/Figure_S2-x3.pdf", stacked_plot_fhmm_x3, width = 3.36, height = 6, units = "in", dpi = 600)
 
 #### Code generating Figure 4 ####
-if (!require('tibble', quietly = TRUE)) { install.packages('tibble') } 
 library('tibble')
-if (!require('NGLVieweR', quietly = TRUE)) { install.packages('NGLVieweR') } 
 library('NGLVieweR')
 
 
@@ -347,9 +329,9 @@ library(grid)
 library(patchwork)  # ★ 새로 추가
 
 # image path
-clustered_path <- "result/Figure_4-clustered.png"
-original_path <- "result/Figure_4-original.png"
-ss_path <- "result/Figure_4-SS.png"
+clustered_path <- "results/Figure_4-clustered.png"
+original_path <- "results/Figure_4-original.png"
+ss_path <- "results/Figure_4-SS.png"
 
 crop_image <- function(image_path, crop_width = 50, crop_height = 75) {
   img <- image_read(image_path)
@@ -429,6 +411,6 @@ final_plot <- row_plots / legend_plot +
 final_plot
 
 
-ggsave("result/Figure_4.pdf", final_plot, width = 7, height = 5.7, dpi = 600)
+ggsave("results/Figure_4.pdf", final_plot, width = 7, height = 5.7, dpi = 600)
 
 

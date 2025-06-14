@@ -1,16 +1,9 @@
 ##### Required packages ####
-
-if (!require('Rcpp', quietly = TRUE)) { install.packages('Rcpp') } 
 library('Rcpp')
-if (!require('RcppEigen', quietly = TRUE)) { install.packages('RcppEigen') } 
 library('RcppEigen')
-if (!require('tibble', quietly = TRUE)) { install.packages('tibble') } 
 library('tibble')
-if (!require('RcppHMM', quietly = TRUE)) { install.packages('RcppHMM') }
 library('RcppHMM')
-if (!require('RcppArmadillo', quietly = TRUE)) { install.packages('RcppArmadillo') }
 library('RcppArmadillo')
-if (!require('SimDesign', quietly = TRUE)) { install.packages('SimDesign') } 
 library('SimDesign')
 
 #### Matrix inversion ####

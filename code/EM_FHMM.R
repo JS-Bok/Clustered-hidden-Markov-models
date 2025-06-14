@@ -19,7 +19,6 @@
 
 # Import required libraries
 library(MASS)
-if (!require('GMCM', quietly = TRUE)) { install.packages('GMCM') } 
 library(GMCM)
 source("code/Auxiliary_Functions.R")
 

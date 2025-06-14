@@ -6,24 +6,11 @@
 sapply(c("code/EM_MLE.R","code/EM_MPLE.R","code/EM_FHMM.R","code/EM_Oracle.R"), source)
 
 # Required library to load data 
-library(httr)
 library(parallel) # Use multicore.
 core_num <- 25 # Set number of cores.
 
-# Base directory of data
-home_dir <- "https://raw.githubusercontent.com/JS-Bok/Clustered-hidden-Markov-models/main/data/"
-
 #### Model 1 ####
-# Raw URL of the file
-file_url <- paste0(home_dir,"Sim2_Model1.Rdata")
-
-# Load data
-temp_file <- tempfile(fileext = ".Rdata")
-response <- GET(file_url)
-writeBin(content(response, as = "raw"), temp_file)
-load(temp_file)
-rm(response)
-unlink(temp_file)
+load("data/Sim2_Model1.Rdata")
 
 # Define a function generating numerical results across OE, MLE, MPLE
 model_measurements <- function(data, dist_class, A_true, phi_true){
@@ -106,16 +93,7 @@ Model1_result <- mclapply(Sim2_Model1, function(x){
 
 
 #### Model 2 ####
-# Raw URL of the file
-file_url <- paste0(home_dir,"Sim2_Model2.Rdata")
-
-# Load data
-temp_file <- tempfile(fileext = ".Rdata")
-response <- GET(file_url)
-writeBin(content(response, as = "raw"), temp_file)
-load(temp_file)
-rm(response)
-unlink(temp_file)
+load("data/Sim2_Model2.Rdata")
 
 # Define a function generating numerical results across OE, MLE, MPLE
 model_measurements <- function(data, dist_class, A_true, phi_true){
@@ -207,16 +185,7 @@ Model2_result <- mclapply(Sim2_Model2, function(x){
 
 
 #### Model 3 ####
-# Raw URL of the file
-file_url <- paste0(home_dir,"Sim2_Model3.Rdata")
-
-# Load data
-temp_file <- tempfile(fileext = ".Rdata")
-response <- GET(file_url)
-writeBin(content(response, as = "raw"), temp_file)
-load(temp_file)
-rm(response)
-unlink(temp_file)
+load("data/Sim2_Model3.Rdata")
 
 # Define a function generating numerical results across OE, MLE, MPLE
 model_measurements <- function(data, dist_class, A_true, phi_true){
@@ -304,16 +273,7 @@ Model3_result <- mclapply(Sim2_Model3, function(x){
 
 
 #### Model 4 ####
-# Raw URL of the file
-file_url <- paste0(home_dir,"Sim2_Model4.Rdata")
-
-# Load data
-temp_file <- tempfile(fileext = ".Rdata")
-response <- GET(file_url)
-writeBin(content(response, as = "raw"), temp_file)
-load(temp_file)
-rm(response)
-unlink(temp_file)
+load("data/Sim2_Model4.Rdata")
 
 # Define a function generating numerical results across OE, MLE, MPLE
 model_measurements <- function(data, dist_class, A_true, phi_true){
