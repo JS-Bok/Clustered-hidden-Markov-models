@@ -199,7 +199,7 @@ EM_MPLE_singleLambda <- function(y,A=NULL,dist_class,parameter=NULL,Lambda, tol=
     
     # Pairwise-Differential matrix
     D <- diff_mat(m, (m-1))
-    tDD <- eigenMatMult(t(D),D)
+    tDD <- t(D) %*% D
     
     # initial alpha and beta in ADMM
     a <- D %*% A_vec
@@ -233,7 +233,7 @@ EM_MPLE_singleLambda <- function(y,A=NULL,dist_class,parameter=NULL,Lambda, tol=
       # Initial step size of Log-Barrier method
       t_0 <- 1
       # Pre-calculated value for efficient calculation.
-      Dab <- eigenMatMult(t(D),(a-b))
+      Dab <- t(D) %*% (a-b)
       
       ### Update A_vec ###
       while (m*(m-1)/LB_par > 1e-14) {

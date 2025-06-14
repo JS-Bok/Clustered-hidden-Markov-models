@@ -98,27 +98,11 @@ Pi = Protein_FHMM$Pi
 M=3
 K=3
 
-# hmm2fhmm_par <- function(x, M, K){
-#   index_mat <- sapply(1:M, function(x){rep(1:K, K^(x-1), each=K^(M-x))})
-#   fhmm_mean <- apply(index_mat, 1, function(xx){
-#     x_new <- 0
-#     for (i in 1:M) {
-#       x_new <- x_new + x[K*(i-1)+xx[i]]
-#     }
-#     return(x_new)
-#   })
-#   return(fhmm_mean)
-# } # Auxiliary functions for FHMM
-# 
-# Mu_hmm <- apply(X=Mu, MARGIN=2, hmm2fhmm_par, M=M, K=K)
-# Pi_hmm <- exp(hmm2fhmm_par(log(as.vector(Pi)), M, K))
-# 
 A_fhmm <- P[(K*(M-1)+1):(K*M),]
 for (i in (M-1):1) {
   A_fhmm <- kronecker(P[(K*(i-1)+1):(K*i),], A_fhmm)
 }
-# 
-# parameter <- apply(Mu_hmm, 1,function(x){list(mean=x, sigma = Cov)}, simplify = TRUE)
+
 parameter <- Protein_FHMM$par
 
 em_mat_list <- lapply(y, em_prob_mat, x=Pi_hmm, dist_class=dist_class, parameter=parameter)
@@ -183,11 +167,11 @@ stacked_plot_clustered <- ggplot(SS_match_combined, aes(x = clustered, fill = SS
   geom_bar(position = "stack") +
   scale_y_continuous(limits = c(0, max_y)) +
   theme_minimal() +
-  theme(legend.position = "none", 
-        axis.title.x = element_blank(), 
-        axis.title.y = element_blank())
+  theme(axis.title.x = element_blank(), 
+        axis.title.y = element_blank())+
+  labs(fill = "Secondary structure") 
 
-ggsave("result/Figure_3-clustered.pdf", stacked_plot_clustered, width = 5, height = 6, units = "in", dpi = 600)
+ggsave("result/Figure_3-clustered.pdf", stacked_plot_clustered, width = 7, height = 6, units = "in", dpi = 600)
 
 
 #### Code generating Figure S2 ####
@@ -248,11 +232,11 @@ stacked_plot_fhmm_x3 <- ggplot(SS_match_combined, aes(x = fhmm_x3, fill = SS)) +
   geom_bar(position = "stack") +
   scale_y_continuous(limits = c(0, max_y)) +
   theme_minimal() +
-  theme(legend.position = "none", 
-        axis.title.x = element_blank(), 
-        axis.title.y = element_blank())
+  theme(axis.title.x = element_blank(), 
+        axis.title.y = element_blank())+
+  labs(fill = "Secondary structure") 
 
-ggsave("result/Figure_S2-x3.pdf", stacked_plot_fhmm_x3, width = 1.5, height = 6, units = "in", dpi = 600)
+ggsave("result/Figure_S2-x3.pdf", stacked_plot_fhmm_x3, width = 3.36, height = 6, units = "in", dpi = 600)
 
 #### Code generating Figure 4 ####
 if (!require('tibble', quietly = TRUE)) { install.packages('tibble') } 
@@ -357,8 +341,94 @@ NGLVieweR("2PNE") %>%
 ###------------------------------------------------------------------###
 ###* We saved the four figures in result folder with size 350 X 550 *###
 ###------------------------------------------------------------------###
+library(magick)     # crop_image 에 필요
+library(ggplot2)
+library(grid)
+library(patchwork)  # ★ 새로 추가
+
+# image path
+clustered_path <- "result/Figure_4-clustered.png"
+original_path <- "result/Figure_4-original.png"
+ss_path <- "result/Figure_4-SS.png"
+
+crop_image <- function(image_path, crop_width = 50, crop_height = 75) {
+  img <- image_read(image_path)
+  info <- image_info(img)
+  new_width <- info$width - (2 * crop_width)  # 양쪽에서 crop_width 만큼씩 자름
+  new_height <- info$height - crop_height
+  image_crop(img, geometry = paste0(new_width, "x", new_height, "+", crop_width, "+0"))
+}
+
+ss_img <- crop_image(ss_path, crop_width = 10, crop_height = 50)
+original_img <- crop_image(original_path, crop_width = 10, crop_height = 50)
+clustered_img <- crop_image(clustered_path, crop_width = 10, crop_height = 50)
+
+scale_height <- function(image, scale_factor = 1.1) {
+  info <- image_info(image)
+  new_height <- as.integer(info$height * scale_factor)  # 높이만 scale_factor 배로 조정
+  image_resize(image, paste0(info$width, "x", new_height, "!"))  # 강제로 높이만 조정
+}
+
+# original_img <- scale_height(original_img, scale_factor = 1.05)  # 10% 증가
+
+#--- 2. raster 이미지를 ggplot 객체로 변환 ----------------------------------------
+ss_plot <- ggplot() +
+  annotation_custom(rasterGrob(as.raster(ss_img), interpolate = TRUE),
+                    xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  theme_void()
+
+original_plot <- ggplot() +
+  annotation_custom(rasterGrob(as.raster(original_img), interpolate = TRUE),
+                    xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  theme_void()
+
+clustered_plot <- ggplot() +
+  annotation_custom(rasterGrob(as.raster(clustered_img), interpolate = TRUE),
+                    xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+  theme_void()
+
+#--- 3. names -------------------------------------------------
+ss_plot        <- ss_plot        + ggtitle("(a) Secondary structure")
+original_plot  <- original_plot  + ggtitle("(b) Original state")
+clustered_plot <- clustered_plot + ggtitle("(c) Cluster")
 
 
+title_theme <- theme(
+  plot.title = element_text(hjust = .1),
+  plot.margin = margin(t = 5, r = 5, b = 5, l=0)   # 틈 조금
+)
 
+ss_plot        <- ss_plot        + title_theme
+original_plot  <- original_plot  + title_theme
+clustered_plot <- clustered_plot + title_theme
+
+#--- 4.legend -----------------------------------------------------------
+legend_plot <- ggplot() +
+  geom_point(aes(x = 0,   y = 1.15), colour = "#2ca02c", size = 5) +
+  annotate("text", x = 0.1, y = 1.15, label = "Other or Coil", hjust = 0, size = 5) +
+  geom_point(aes(x = 1.1, y = 1.15), colour = "purple", size = 5) +
+  annotate("text", x = 1.2, y = 1.15, label = "State 1", hjust = 0, size = 5) +
+  geom_point(aes(x = 1.1, y = 0.95), colour = "lightblue", size = 5) +
+  annotate("text", x = 1.2, y = 0.95, label = "State 3", hjust = 0, size = 5) +
+  geom_point(aes(x = 1.1, y = 0.75), colour = "#ff7f0e", size = 5) +
+  annotate("text", x = 1.2, y = 0.75, label = "State 4", hjust = 0, size = 5) +
+  geom_point(aes(x = 2.2, y = 1.15), colour = "red", size = 5) +
+  annotate("text", x = 2.3, y = 1.15,
+           label = expression(Cluster~C[1]), hjust = 0, size = 5) +
+  xlim(0, 3) + ylim(0.5, 1.2) +
+  theme_void()
+
+#--- 5. patchwork -------------------------------------------------
+
+
+row_plots <- (ss_plot | original_plot | clustered_plot) 
+
+final_plot <- row_plots / legend_plot +
+  plot_layout(heights = c(3, 1))
+
+final_plot
+
+
+ggsave("result/Figure_4.pdf", final_plot, width = 7, height = 5.7, dpi = 600)
 
 

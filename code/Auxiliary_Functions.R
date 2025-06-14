@@ -6,8 +6,6 @@ if (!require('RcppEigen', quietly = TRUE)) { install.packages('RcppEigen') }
 library('RcppEigen')
 if (!require('tibble', quietly = TRUE)) { install.packages('tibble') } 
 library('tibble')
-if (!require('diffudist', quietly = TRUE)) { install.packages('diffudist') }
-library('diffudist')
 if (!require('RcppHMM', quietly = TRUE)) { install.packages('RcppHMM') }
 library('RcppHMM')
 if (!require('RcppArmadillo', quietly = TRUE)) { install.packages('RcppArmadillo') }
