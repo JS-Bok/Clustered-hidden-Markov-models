@@ -29,6 +29,6 @@ Datasets, codes, and numerical results for reproduce the results in "Clustered h
 
    Run `Code_for_figures.R`.
 
-   **Important**: Reproducing **Figure 4** requires a brief manual action. Please follow the instructions provided in the *Code generating Figure 4* section of 'Code_for_figures.R' before running that part of the script.
+   **Important**: Reproducing **Figure 4** requires a brief manual action. Please follow the instructions provided in the *####Code generating Figure 4####* section of 'Code_for_figures.R' before running that part of the script.
 
    
