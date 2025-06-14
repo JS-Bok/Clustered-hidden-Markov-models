@@ -12,7 +12,7 @@ Datasets, codes, and numerical results for reproduce the results in "Clustered h
 |-----------|-------------|
 | **`data/`** | Contains all datasets used in **Simulation 1**, **Simulation 2**, and the **protein-structure analysis**. A file `data/README.md` explains how each dataset was obtained. |
 | **`code/`** | R scripts implementing every algorithm evaluated in the paper, including our proposed **EM-ADMM** procedure. Three turnkey scripts—`Reproduce_Simulation1.R`, `Reproduce_Simulation2.R`, and `Reproduce_ProteinStructureAnalysis.R`—recreate all numerical results and figures reported in the manuscript. |
-| **`results/`** | Reference outputs (tables, figures, log files) produced by running the reproduction scripts above. These files allow quick verification of expected results without re-executing the full pipeline. |
+| **`results/`** | Outputs produced by running the reproduction scripts above. |
 
 ### Reproduction Workflow
 
