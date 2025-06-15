@@ -1,6 +1,6 @@
 # Result Files
 
-This folder contains the results from the simulations and protein structure analysis of the "Clustered Hidden Markov Models" (J. Bok & S. Shin). The results are stored in Rdata format.
+This folder contains the results from the simulations and protein structure analysis of the "Clustered Hidden Markov Models". The results are stored in Rdata format.
 
 ---
 
