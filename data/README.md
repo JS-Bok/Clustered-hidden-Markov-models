@@ -1,8 +1,4 @@
-# Data Files
-
-This folder contains the data files used in the "Clustered Hidden Markov Models".
-
----
+# Data File
 
 ## Protein Data
 - **File:** `Protein_data.Rdata`
