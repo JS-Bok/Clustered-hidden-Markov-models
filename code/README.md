@@ -39,8 +39,6 @@ This folder contains R scripts used in the "Clustered Hidden Markov Models". Eac
 
 ### 3. Scripts for Reproducing Numerical Results
 
-All datasets are stored [here](https://github.com/JS-Bok/Clustered-hidden-Markov-models/tree/main/data) and are automatically loaded by each script.
-
 #### 3-1. Reproducing Simulation 1
 - **File:** `Reproduce_Simulation1.R`  
 - **Description:**  
