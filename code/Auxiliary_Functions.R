@@ -448,55 +448,35 @@ cf <- function(A, th=1e-2) {
 #### Function for TPR, FPR, TP, FP ####
 # TI = cf(True transition matrix)$index
 # EI = cf(Estimated transition matrix)$index
-TFPN<- function(TI,EI){
-  m <- max(unlist(TI))
-  pa1 <- rep(0, length = m*(m-1)/2)
-  pa2 <- rep(0, length = m*(m-1)/2)
+TFPN <- function(TI, EI){
+  m <- max(c(unlist(TI), unlist(EI)))
+  pa1 <- rep(0, m*(m-1)/2)
+  pa2 <- rep(0, m*(m-1)/2)
+  
   for (k in TI) {
-    for (i in c(1:(m-1))) {
-      for (j in c((i+1):m)) {
-        if({i %in% k}&&{j %in% k}){
-          pa1[(i-1)*m-i*(i+1)/2+j] <- 1
-        }
-      }
-      
+    for (i in 1:(m-1)) for (j in (i+1):m) {
+      if (i %in% k && j %in% k) pa1[(i-1)*m - i*(i+1)/2 + j] <- 1
     }
   }
   for (k in EI) {
-    for (i in c(1:(m-1))) {
-      for (j in c((i+1):m)) {
-        if({i %in% k}&&{j %in% k}){
-          pa2[(i-1)*m-i*(i+1)/2+j] <- 1
-        }
-      }
-      
+    for (i in 1:(m-1)) for (j in (i+1):m) {
+      if (i %in% k && j %in% k) pa2[(i-1)*m - i*(i+1)/2 + j] <- 1
     }
   }
-  TP <- 0
-  FP <- 0
-  FN <- 0
-  TN <- 0
   
-  for (l in c(1:(m*(m-1)/2))) {
-    if({pa1[l] == 0} && {pa2[l] == 0}){
-      TP <- TP+1
-    }
-    if({pa1[l] == 1} && {pa2[l] == 0}){
-      FP <- FP+1
-    }
-    if({pa1[l] == 0} && {pa2[l] == 1}){
-      FN <- FN+1
-    }
-    if({pa1[l] == 1} && {pa2[l] == 1}){
-      TN <- TN+1
-    }
+  TP <- FP <- FN <- TN <- 0
+  for (l in 1:(m*(m-1)/2)) {
+    if (pa1[l] == 1 && pa2[l] == 1) TP <- TP + 1  # TPC
+    if (pa1[l] == 0 && pa2[l] == 1) FP <- FP + 1  # FPC
+    if (pa1[l] == 1 && pa2[l] == 0) FN <- FN + 1
+    if (pa1[l] == 0 && pa2[l] == 0) TN <- TN + 1
   }
-  L = list(FPR=FP/(FP+TN), TPR=TP/(TP+FN), TP=TP, FP=FP)
   
-  return(L)
+  TPR <- ifelse((TP+FN) > 0, TP/(TP+FN), NA)   # same-cluster recall
+  FPR <- ifelse((FP+TN) > 0, FP/(FP+TN), NA)   # false same-cluster rate
   
+  list(FPR=FPR, TPR=TPR, TP=TP, FP=FP, FN=FN, TN=TN)
 }
-
 
 
 #### Log-likelihood function ####

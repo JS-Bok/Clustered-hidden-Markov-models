@@ -3,7 +3,7 @@
 ##################################################################
 #### Preliminary ####
 # Load functions
-sapply(c("code/EM_MLE.R","code/EM_MPLE.R","code/EM_FHMM.R","code/EM_Oracle.R"), source)
+sapply(c("code/EM_MLE.R","code/EM_MPLE.R","code/EM_FHMM.R","code/EM_Oracle.R", "code/EM_MPLE-GroupLASSO.R"), source)
 
 # Required library to load data 
 library(parallel) # Use multicore.
@@ -55,6 +55,7 @@ data <- mclapply(Model1_seed,function(x){
 model_measurements <- function(data, dist_class, A_true, phi_true){
   OE_result <- EM_Oracle_Sim1_A1(data,dist_class = dist_class, m=10)
   MLE_result <- EM_MLE(data,dist_class = dist_class, m=10)
+  MPLE_GLASSO_result <- EM_MPLE_GLASSO(data,dist_class = dist_class, m=10)
   MPLE_result <- EM_MPLE(data,dist_class = dist_class, m=10)
   OE_val <- data.frame(TE=n2_sqrt(A_true-OE_result$transition),
                        EE=n2_sqrt(unlist(phi_true)-unlist(OE_result$par)),
@@ -68,13 +69,19 @@ model_measurements <- function(data, dist_class, A_true, phi_true){
                                 cf(MLE_result$transition)$index)$TP,
                         FP=TFPN(cf(A_true)$index,
                                 cf(MLE_result$transition)$index)$FP)
+  MPLE_GLASSO_val <- data.frame(TE=n2_sqrt(A_true-MPLE_GLASSO_result$transition),
+                                EE=n2_sqrt(unlist(phi_true)-unlist(MPLE_GLASSO_result$par)),
+                                TP=TFPN(cf(A_true)$index,
+                                        cf(MPLE_GLASSO_result$transition)$index)$TP,
+                                FP=TFPN(cf(A_true)$index,
+                                        cf(MPLE_GLASSO_result$transition)$index)$FP)
   MPLE_val <- data.frame(TE=n2_sqrt(A_true-MPLE_result$transition),
                          EE=n2_sqrt(unlist(phi_true)-unlist(MPLE_result$par)),
                          TP=TFPN(cf(A_true)$index,
                                  cf(MPLE_result$transition)$index)$TP,
                          FP=TFPN(cf(A_true)$index,
                                  cf(MPLE_result$transition)$index)$FP)
-  return(list(OE=OE_val, MLE=MLE_val, MPLE=MPLE_val))
+  return(list(OE=OE_val, MLE=MLE_val, MPLE_GLASSO=MPLE_GLASSO_val, MPLE=MPLE_val))
 }
 
 dist_class <- "norm"
@@ -135,6 +142,7 @@ data <- mclapply(Model2_seed,function(x){
 model_measurements <- function(data, dist_class, A_true, phi_true){
   OE_result <- EM_Oracle_Sim1_A2(data,dist_class = dist_class, m=10)
   MLE_result <- EM_MLE(data,dist_class = dist_class, m=10)
+  MPLE_GLASSO_result <- EM_MPLE_GLASSO(data,dist_class = dist_class, m=10)
   MPLE_result <- EM_MPLE(data,dist_class = dist_class, m=10)
   OE_val <- data.frame(TE=n2_sqrt(A_true-OE_result$transition),
                        EE=n2_sqrt(unlist(phi_true)-unlist(OE_result$par)),
@@ -148,13 +156,19 @@ model_measurements <- function(data, dist_class, A_true, phi_true){
                                 cf(MLE_result$transition)$index)$TP,
                         FP=TFPN(cf(A_true)$index,
                                 cf(MLE_result$transition)$index)$FP)
+  MPLE_GLASSO_val <- data.frame(TE=n2_sqrt(A_true-MPLE_GLASSO_result$transition),
+                                EE=n2_sqrt(unlist(phi_true)-unlist(MPLE_GLASSO_result$par)),
+                                TP=TFPN(cf(A_true)$index,
+                                        cf(MPLE_GLASSO_result$transition)$index)$TP,
+                                FP=TFPN(cf(A_true)$index,
+                                        cf(MPLE_GLASSO_result$transition)$index)$FP)
   MPLE_val <- data.frame(TE=n2_sqrt(A_true-MPLE_result$transition),
                          EE=n2_sqrt(unlist(phi_true)-unlist(MPLE_result$par)),
                          TP=TFPN(cf(A_true)$index,
                                  cf(MPLE_result$transition)$index)$TP,
                          FP=TFPN(cf(A_true)$index,
                                  cf(MPLE_result$transition)$index)$FP)
-  return(list(OE=OE_val, MLE=MLE_val, MPLE=MPLE_val))
+  return(list(OE=OE_val, MLE=MLE_val, MPLE_GLASSO=MPLE_GLASSO_val, MPLE=MPLE_val))
 }
 
 dist_class <- "norm"
@@ -217,6 +231,7 @@ data <- mclapply(Model3_seed,function(x){
 model_measurements <- function(data, dist_class, A_true, phi_true){
   OE_result <- EM_Oracle_Sim1_A1(data,dist_class = dist_class, m=10)
   MLE_result <- EM_MLE(data,dist_class = dist_class, m=10)
+  MPLE_GLASSO_result <- EM_MPLE_GLASSO(data,dist_class = dist_class, m=10)
   MPLE_result <- EM_MPLE(data,dist_class = dist_class, m=10)
   OE_val <- data.frame(TE=n2_sqrt(A_true-OE_result$transition),
                        EE=n2_sqrt(unlist(phi_true)-unlist(OE_result$par)),
@@ -230,13 +245,19 @@ model_measurements <- function(data, dist_class, A_true, phi_true){
                                 cf(MLE_result$transition)$index)$TP,
                         FP=TFPN(cf(A_true)$index,
                                 cf(MLE_result$transition)$index)$FP)
+  MPLE_GLASSO_val <- data.frame(TE=n2_sqrt(A_true-MPLE_GLASSO_result$transition),
+                                EE=n2_sqrt(unlist(phi_true)-unlist(MPLE_GLASSO_result$par)),
+                                TP=TFPN(cf(A_true)$index,
+                                        cf(MPLE_GLASSO_result$transition)$index)$TP,
+                                FP=TFPN(cf(A_true)$index,
+                                        cf(MPLE_GLASSO_result$transition)$index)$FP)
   MPLE_val <- data.frame(TE=n2_sqrt(A_true-MPLE_result$transition),
                          EE=n2_sqrt(unlist(phi_true)-unlist(MPLE_result$par)),
                          TP=TFPN(cf(A_true)$index,
                                  cf(MPLE_result$transition)$index)$TP,
                          FP=TFPN(cf(A_true)$index,
                                  cf(MPLE_result$transition)$index)$FP)
-  return(list(OE=OE_val, MLE=MLE_val, MPLE=MPLE_val))
+  return(list(OE=OE_val, MLE=MLE_val, MPLE_GLASSO=MPLE_GLASSO_val, MPLE=MPLE_val))
 }
 
 dist_class <- "mvnorm"
@@ -306,6 +327,7 @@ data <- mclapply(Model4_seed,function(x){
 model_measurements <- function(data, dist_class, A_true, phi_true){
   OE_result <- EM_Oracle_Sim1_A2(data,dist_class = dist_class, m=10)
   MLE_result <- EM_MLE(data,dist_class = dist_class, m=10)
+  MPLE_GLASSO_result <- EM_MPLE_GLASSO(data,dist_class = dist_class, m=10)
   MPLE_result <- EM_MPLE(data,dist_class = dist_class, m=10)
   OE_val <- data.frame(TE=n2_sqrt(A_true-OE_result$transition),
                        EE=n2_sqrt(unlist(phi_true)-unlist(OE_result$par)),
@@ -319,13 +341,19 @@ model_measurements <- function(data, dist_class, A_true, phi_true){
                                 cf(MLE_result$transition)$index)$TP,
                         FP=TFPN(cf(A_true)$index,
                                 cf(MLE_result$transition)$index)$FP)
+  MPLE_GLASSO_val <- data.frame(TE=n2_sqrt(A_true-MPLE_GLASSO_result$transition),
+                                EE=n2_sqrt(unlist(phi_true)-unlist(MPLE_GLASSO_result$par)),
+                                TP=TFPN(cf(A_true)$index,
+                                        cf(MPLE_GLASSO_result$transition)$index)$TP,
+                                FP=TFPN(cf(A_true)$index,
+                                        cf(MPLE_GLASSO_result$transition)$index)$FP)
   MPLE_val <- data.frame(TE=n2_sqrt(A_true-MPLE_result$transition),
                          EE=n2_sqrt(unlist(phi_true)-unlist(MPLE_result$par)),
                          TP=TFPN(cf(A_true)$index,
                                  cf(MPLE_result$transition)$index)$TP,
                          FP=TFPN(cf(A_true)$index,
                                  cf(MPLE_result$transition)$index)$FP)
-  return(list(OE=OE_val, MLE=MLE_val, MPLE=MPLE_val))
+  return(list(OE=OE_val, MLE=MLE_val, MPLE_GLASSO=MPLE_GLASSO_val, MPLE=MPLE_val))
 }
 
 dist_class <- "mvnorm"
