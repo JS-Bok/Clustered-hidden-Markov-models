@@ -29,7 +29,14 @@ This folder contains R scripts used in the "Clustered Hidden Markov Models". Eac
   Implements an EM algorithm for Oracle Estimation of CHMM.  
   - `EM_Oracle_Sim{i}_A{j}`: Oracle estimation function for Simulation `{i}`, using the `{j}`-th transition matrix.
 
-#### 2-4. EM Algorithm for OE of FHMM
+#### 2-4. EM Algorithm for MPLE-LASSO of CHMM
+- **File:** `EM_MPLE-GroupLASSO.R`  
+- **Description:**  
+  Implements an EM algorithm for the Maximum Penalized Likelihood Estimation of CHMM, where the SCAD penalty function is replaced by the group-LASSO penalty function.  
+  - `EM_MPLE_GLASSO_singleLambda`: EM algorithm using a single penalty parameter.  
+  - `EM_MPLE_GLASSO`: EM algorithm using multiple penalty parameters.
+
+#### 2-5. EM Algorithm for OE of FHMM
 - **File:** `EM_FHMM.R`  
 - **Description:**  
   Implements an EM algorithm for the OE of FHMM.  
