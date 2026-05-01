@@ -9,8 +9,8 @@ library(grid)
 library(ggplot2)
 library(reshape2)
 library(patchwork)
-library('tibble')
-library('NGLVieweR')
+library(tibble)
+library(NGLVieweR)
 
 
 # Load data
