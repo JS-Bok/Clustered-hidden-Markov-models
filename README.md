@@ -38,4 +38,4 @@ Datasets, codes, and numerical results for reproduce the results in "Clustered h
 
    Run `code/Real_data_analysis/Figure-Protein_structure_analysis.R`.
 
-   **Important**: Reproducing **Figure 4** requires a brief manual action. Please follow the instructions provided in the *####Code generating Figure 4####* section of 'Figure-Protein_structure_analysis.R' before running that part of the script.
+   **Important**: Reproducing **Figure 4** requires a brief manual action. Please follow the instructions provided in the *####Code generating Figure 4####* section of `code/Real_data_analysis/Figure-Protein_structure_analysis.R` before running that part of the script.
