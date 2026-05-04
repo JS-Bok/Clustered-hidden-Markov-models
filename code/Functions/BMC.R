@@ -29,7 +29,7 @@ run_bmc_autoK <- function(freq_mat,
     stop("sum(freq_mat) must be larger than nrow(freq_mat).")
   }
   
-  # Python numpy array로 명시적으로 변환
+  # Convert to Python numpy array
   freq_py <- np$array(freq_mat, dtype = "float64", order = "C")
   
   # 1) trimming
@@ -43,7 +43,7 @@ run_bmc_autoK <- function(freq_mat,
   singular_value_threshold <- ratio^0.75 #sqrt(ratio) * log(ratio)
   num_indices <- n_states #as.integer(ceiling(log(n_states)))
   
-  # 2) K 자동추정
+  # 2) Estimated K
   k_hat_py <- bmc$compute_num_clusters(
     trimmed_py,
     radius,
