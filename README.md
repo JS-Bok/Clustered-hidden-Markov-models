@@ -2,31 +2,40 @@
 Datasets, codes, and numerical results for reproduce the results in "Clustered hidden Markov models".
 
 ## Environment Details
-- **Operating System**: Ubuntu 22.04.2 LTS
-- **Kernel Version**: 5.19.0-46-generic (x86_64)
+- **Operating System**: Ubuntu 22.04.2 LTS/ Windows 11
 - **Programming Language**: R 4.5.0
 
 ## Repository Structure
 
 | Directory | Description |
 |-----------|-------------|
-| **`data/`** | A dataset used in **protein-structure analysis**.|
-| **`code/`** | R scripts implementing every algorithm evaluated in the paper, including our proposed **EM-ADMM** procedure. Three reproduction scripts—`Reproduce_Simulation1.R`, `Reproduce_Simulation2.R`, and `Reproduce_ProteinStructureAnalysis.R`—reproduce all numerical results reported in the manuscript. |
+| **`data/`** | A dataset used in **protein structure analysis**.|
+| **`code/`** | R scripts implementing every algorithm evaluated in the paper, including our proposed **EM-ADMM** procedure. |
 | **`results/`** | Outputs produced by running the reproduction scripts above. |
 
 ### Reproduction Workflow
 
 1. **Restore the R environment**
+
    ```r
    install.packages("renv")  # if not already installed
    renv::restore()
+2. **(Ubuntu 22.04.2 LTS) Run the reproduction scripts for numerical results except BMC**
 
-2. **Run the reproduction scripts for numerical results**
+   Run `code/Simulation/Reproduce_Simulation123.R`, `code/Simulation/Reproduce_Simulation4.R`, `code/Simulation/Reproduce_SensitivityAnalysis.R`, and `code/Real_data_analysis/Reproduce-Protein_structure_analysis.R`.
+   
+3. **(Windows 11) Run the reproduction scripts for numerical results of BMC**
 
-   Run `code/Reproduce_Simulation1.R`, `code/Reproduce_Simulation2.R`, and `code/ProteinStructureAnalysis.R`.
+   Generate Python environment for BMC and install BMCToolkit:
+   ```r
+   conda_create("bmc-py", packages = "python=3.11")
+   use_condaenv("bmc-py", required = TRUE)
+   py_install(c("numpy<2", "BMCToolkit"), envname = "bmc-py", pip = TRUE)
+   ```
+   Run `code/Simulation/Reproduce_Simulation4-BMC.R`.
 
-3. **Run the reproduction scripts for figures in manuscripts**
+4. **Run the reproduction scripts for figures in manuscripts**
 
-   Run `Code_for_figures.R`.
+   Run `code/Real_data_analysis/Figure-Protein_structure_analysis.R`.
 
    **Important**: Reproducing **Figure 4** requires a brief manual action. Please follow the instructions provided in the *####Code generating Figure 4####* section of 'Code_for_figures.R' before running that part of the script.
