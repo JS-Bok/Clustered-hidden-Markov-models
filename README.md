@@ -26,7 +26,7 @@ Datasets, codes, and numerical results for reproduce the results in "Clustered h
    
 3. **(Windows 11) Run the reproduction scripts for numerical results of BMC**
 
-   Generate Python environment for BMC and install BMCToolkit:
+   Generate Python environment for BMC and install BMCToolkit(https://pypi.org/project/BMCToolkit/#description):
    ```r
    conda_create("bmc-py", packages = "python=3.11")
    use_condaenv("bmc-py", required = TRUE)
