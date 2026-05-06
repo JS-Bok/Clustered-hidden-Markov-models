@@ -177,22 +177,22 @@ stacked_plot_original <- ggplot(SS_match_combined, aes(x = original, fill = SS))
   geom_bar(position = "stack") +
   scale_y_continuous(limits = c(0, max_y),breaks = 1000*(0:5)) +
   theme_minimal() +
-  theme(legend.position = "none", 
-        axis.title.x = element_blank(), 
-        axis.title.y = element_blank())
+  labs(x = "Decoded fine-states",
+       y = "Counts of secondary structure",
+       fill = "Secondary structure")
 
-ggsave("results/Figure_3-original.pdf", stacked_plot_original, width = 7, height = 6, units = "in", dpi = 600)
+ggsave("results/Figure_3-original.pdf", stacked_plot_original, width = 9, height = 4, units = "in", dpi = 600)
 
 
 stacked_plot_clustered <- ggplot(SS_match_combined, aes(x = clustered, fill = SS)) +
   geom_bar(position = "stack") +
   scale_y_continuous(limits = c(0, max_y),breaks = 1000*(0:5)) +
   theme_minimal() +
-  theme(axis.title.x = element_blank(), 
-        axis.title.y = element_blank())+
-  labs(fill = "Secondary structure") 
+  labs(x = "Decoded clusters",
+       y = "Counts of secondary structure",
+       fill = "Secondary structure")
 
-ggsave("results/Figure_3-clustered.pdf", stacked_plot_clustered, width = 7, height = 6, units = "in", dpi = 600)
+ggsave("results/Figure_3-clustered.pdf", stacked_plot_clustered, width = 7.5, height = 4, units = "in", dpi = 600)
 
 
 #### Code generating Figure S2 ####
