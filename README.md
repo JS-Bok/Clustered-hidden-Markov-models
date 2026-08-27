@@ -1,5 +1,5 @@
 # Clustered Hidden Markov Models (CHMMs)
-Datasets, codes, and numerical results for reproduce the results in "Clustered hidden Markov models".
+Datasets, codes, and numerical results for reproduce the results in "Transition-based state clustering in hidden Markov models".
 
 ## Environment Details
 - **Operating System**: Ubuntu 22.04.2 LTS/ Windows 11
@@ -15,6 +15,8 @@ Datasets, codes, and numerical results for reproduce the results in "Clustered h
 
 ### Reproduction Workflow
 
+**Note:** Simulation 4 corresponds to the comparison with BMC in the fully observed Markov-chain setting.
+
 1. **Restore the R environment**
 
    ```r
@@ -24,7 +26,7 @@ Datasets, codes, and numerical results for reproduce the results in "Clustered h
 
    Run `code/Simulation/Reproduce_Simulation123.R`, `code/Simulation/Reproduce_Simulation4.R`, `code/Simulation/Reproduce_SensitivityAnalysis.R`, and `code/Real_data_analysis/Reproduce-Protein_structure_analysis.R`.
    
-3. **(Windows 11) Run the reproduction scripts for numerical results of BMC**
+3. **(Windows 11) Reproduce the BMC results for Simulation 4**
 
    Generate Python environment for BMC and install BMCToolkit (https://pypi.org/project/BMCToolkit/#description):
    ```r
@@ -38,4 +40,4 @@ Datasets, codes, and numerical results for reproduce the results in "Clustered h
 
    Run `code/Real_data_analysis/Figure-Protein_structure_analysis.R`.
 
-   **Important**: Reproducing **Figure 4** requires a brief manual action. Please follow the instructions provided in the *####Code generating Figure 4####* section of `code/Real_data_analysis/Figure-Protein_structure_analysis.R` before running that part of the script.
+   **Important**: Reproducing **Figure S2** requires a brief manual action. Please follow the instructions provided in the *####Code generating Figure 4####* section of `code/Real_data_analysis/Figure-Protein_structure_analysis.R` before running that part of the script.
