@@ -102,7 +102,7 @@ SS_match <- mapply(function(x,y,z){data.frame(original=x$original, clustered=x$c
 
 
 
-#### Code generating Figure S7 ####
+#### Code generating Figure S3 ####
 plot_transition_heatmap <- function(sim_data, title_text) {
   A <- sim_data$A*100
   groups <- sim_data$groups
@@ -139,11 +139,11 @@ plot_transition_heatmap <- function(sim_data, title_text) {
   return(p)
 }
 
-figS7 <- plot_transition_heatmap(list(A=A,groups=cf(A)$index), title_text = NULL)
+figS3 <- plot_transition_heatmap(list(A=A,groups=cf(A)$index), title_text = NULL)
 
 
 
-#### Code generating Figure 3 ####
+#### Code generating Figure 2 ####
 SS_match_combined <- Reduce(rbind, SS_match) 
 
 SS_match_combined[SS_match_combined=="H"] <- "Alpha Helix"
@@ -171,31 +171,6 @@ SS_match_combined$clustered <- factor(SS_match_combined$clustered,
 
 
 max_y <- 4600
-
-
-stacked_plot_original <- ggplot(SS_match_combined, aes(x = original, fill = SS)) +
-  geom_bar(position = "stack") +
-  scale_y_continuous(limits = c(0, max_y),breaks = 1000*(0:5)) +
-  theme_minimal() +
-  labs(x = "Decoded fine-states",
-       y = "Counts of secondary structure",
-       fill = "Secondary structure")
-
-ggsave("results/Figure_3-original.pdf", stacked_plot_original, width = 9, height = 4, units = "in", dpi = 600)
-
-
-stacked_plot_clustered <- ggplot(SS_match_combined, aes(x = clustered, fill = SS)) +
-  geom_bar(position = "stack") +
-  scale_y_continuous(limits = c(0, max_y),breaks = 1000*(0:5)) +
-  theme_minimal() +
-  labs(x = "Decoded clusters",
-       y = "Counts of secondary structure",
-       fill = "Secondary structure")
-
-ggsave("results/Figure_3-clustered.pdf", stacked_plot_clustered, width = 7.5, height = 4, units = "in", dpi = 600)
-
-
-#### Code generating Figure S2 ####
 
 K=3; M=3
 index_mat <- sapply(1:M, function(x){rep(1:K, K^(x-1), each=K^(M-x))})
@@ -227,39 +202,255 @@ SS_match_combined$fhmm_x3 <- fhmm_x3
 
 max_y <- 15000
 
+K <- 3
+M <- 3
 
-stacked_plot_fhmm_x1 <- ggplot(SS_match_combined, aes(x = fhmm_x1, fill = SS)) +
-  geom_bar(position = "stack") +
-  scale_y_continuous(limits = c(0, max_y)) +
-  theme_minimal() +
-  theme(legend.position = "none", 
-        axis.title.x = element_blank(), 
-        axis.title.y = element_blank())
+index_mat <- sapply(
+  seq_len(M),
+  function(j) {
+    rep(
+      seq_len(K),
+      times = K^(j - 1),
+      each  = K^(M - j)
+    )
+  }
+)
 
-ggsave("results/Figure_S2-x1.pdf", stacked_plot_fhmm_x1, width = 1.5, height = 6, units = "in", dpi = 600)
+fhmm_state_id <- as.integer(as.character(SS_match_combined$fhmm))
+
+if (anyNA(fhmm_state_id) ||
+    any(!fhmm_state_id %in% seq_len(nrow(index_mat)))) {
+  stop("FHMM state labels must be integers from 1 to 27.")
+}
+
+SS_match_combined <- SS_match_combined %>%
+  mutate(
+    fhmm_x1 = factor(index_mat[fhmm_state_id, 1], levels = 1:3),
+    fhmm_x2 = factor(index_mat[fhmm_state_id, 2], levels = 1:3),
+    fhmm_x3 = factor(index_mat[fhmm_state_id, 3], levels = 1:3)
+  )
+
+fhmm_long <- SS_match_combined %>%
+  select(SS, fhmm_x1, fhmm_x2, fhmm_x3) %>%
+  pivot_longer(
+    cols = starts_with("fhmm_x"),
+    names_to = "chain",
+    values_to = "state"
+  ) %>%
+  mutate(
+    chain = factor(
+      chain,
+      levels = c("fhmm_x1", "fhmm_x2", "fhmm_x3"),
+      labels = c("Chain 1", "Chain 2", "Chain 3")
+    ),
+    state = factor(as.character(state), levels = as.character(1:3))
+  )
+
+bar_width <- 0.82
+
+ss_fill_scale <- function() {
+  scale_fill_discrete(
+    name = "Secondary structure",
+    limits = ss_levels,
+    drop = FALSE,
+    guide = guide_legend(
+      ncol = 2,
+      byrow = TRUE
+    )
+  )
+}
+
+theme_ss <- theme_minimal(base_size = 9) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    
+    axis.title = element_text(size = 8.5),
+    axis.text = element_text(size = 7.5),
+    
+    strip.text = element_text(size = 8.5),
+    strip.background = element_blank(),
+    
+    legend.title = element_text(size = 8.5),
+    legend.text = element_text(size = 7.5),
+    
+    plot.tag = element_text(
+      size = 9,
+      face = "plain"
+    ),
+    
+    plot.margin = margin(
+      t = 4, r = 4, b = 4, l = 4,
+      unit = "pt"
+    )
+  )
 
 
-stacked_plot_fhmm_x2 <- ggplot(SS_match_combined, aes(x = fhmm_x2, fill = SS)) +
-  geom_bar(position = "stack") +
-  scale_y_continuous(limits = c(0, max_y)) +
-  theme_minimal() +
-  theme(legend.position = "none", 
-        axis.title.x = element_blank(), 
-        axis.title.y = element_blank())
 
-ggsave("results/Figure_S2-x2.pdf", stacked_plot_fhmm_x2, width = 1.5, height = 6, units = "in", dpi = 600)
+p_a <- ggplot(
+  SS_match_combined,
+  aes(x = original, fill = SS)
+) +
+  geom_bar(
+    position = "stack",
+    width = bar_width
+  ) +
+  scale_x_discrete(
+    expand = expansion(add = 0.5)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 4000, by = 1000),
+    labels = scales::label_comma(),
+    expand = expansion(mult = c(0, 0.02))
+  ) +
+  coord_cartesian(
+    ylim = c(0, 4600),
+    clip = "off"
+  ) +
+  ss_fill_scale() +
+  labs(
+    x = "Decoded fine state",
+    y = "Count",
+    tag = "(a)"
+  ) +
+  theme_ss
 
-stacked_plot_fhmm_x3 <- ggplot(SS_match_combined, aes(x = fhmm_x3, fill = SS)) +
-  geom_bar(position = "stack") +
-  scale_y_continuous(limits = c(0, max_y)) +
-  theme_minimal() +
-  theme(axis.title.x = element_blank(), 
-        axis.title.y = element_blank())+
-  labs(fill = "Secondary structure") 
 
-ggsave("results/Figure_S2-x3.pdf", stacked_plot_fhmm_x3, width = 3.36, height = 6, units = "in", dpi = 600)
 
-#### Code generating Figure 4 ####
+
+p_b <- ggplot(
+  SS_match_combined,
+  aes(x = clustered, fill = SS)
+) +
+  geom_bar(
+    position = "stack",
+    width = bar_width
+  ) +
+  scale_x_discrete(
+    expand = expansion(add = 0.5)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 4000, by = 1000),
+    labels = scales::label_comma(),
+    expand = expansion(mult = c(0, 0.02))
+  ) +
+  coord_cartesian(
+    ylim = c(0, 4600),
+    clip = "off"
+  ) +
+  ss_fill_scale() +
+  labs(
+    x = "Estimated cluster",
+    y = "Count",
+    tag = "(b)"
+  ) +
+  theme_ss
+
+p_c <- ggplot(
+  fhmm_long,
+  aes(x = state, fill = SS)
+) +
+  geom_bar(
+    position = "stack",
+    width = bar_width
+  ) +
+  facet_grid(
+    cols = vars(chain)
+  ) +
+  scale_x_discrete(
+    expand = expansion(add = 0.5)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, 15000, by = 5000),
+    labels = scales::label_comma(),
+    expand = expansion(mult = c(0, 0.02))
+  ) +
+  coord_cartesian(
+    ylim = c(0, 15000),
+    clip = "off"
+  ) +
+  ss_fill_scale() +
+  labs(
+    x = "FHMM state",
+    y = "Count",
+    tag = "(c)"
+  ) +
+  theme_ss +
+  theme(
+    ## The gap between chains is intentionally larger than
+    ## the gap between states within a chain.
+    panel.spacing.x = unit(0.7, "lines")
+  )
+
+## The full width corresponds to the 27 states in panel (a).
+total_span   <- 27L
+cluster_span <- 20L
+
+## Nine FHMM states plus additional space for two facet gaps
+## and the wider y-axis labels.
+fhmm_span <- 11L
+
+figure_design <- c(
+  area(
+    t = 1, l = 1,
+    b = 1, r = total_span
+  ),
+  area(
+    t = 2, l = 1,
+    b = 2, r = cluster_span
+  ),
+  area(
+    t = 3, l = 1,
+    b = 3, r = fhmm_span
+  ),
+  area(
+    t = 3, l = fhmm_span + 2,
+    b = 3, r = total_span
+  )
+)
+
+protein_ss_figure <- wrap_plots(
+  p_a,
+  p_b,
+  p_c,
+  guide_area(),
+  design = figure_design,
+  heights = c(1, 1, 0.95),
+  guides = "collect"
+) &
+  theme(
+    legend.position = "right",
+    legend.justification = "left",
+    
+    ## Thin border around the entire legend
+    legend.background = element_rect(
+      fill = "white",
+      colour = "grey30",
+      linewidth = 0.3
+    ),
+    
+    legend.margin = margin(
+      t = 5, r = 7, b = 5, l = 7,
+      unit = "pt"
+    ),
+    
+    ## No borders around individual legend keys
+    legend.key = element_rect(
+      fill = NA,
+      colour = NA
+    )
+  )
+
+ggsave(
+  filename = "results/Figure_2.pdf",
+  plot = protein_ss_figure,
+  width = 7.2,
+  height = 7.4,
+  units = "in",
+  device = grDevices::cairo_pdf
+)
+
+#### Code generating Figure S2 ####
 
 
 
@@ -365,9 +556,9 @@ library(grid)
 library(patchwork)
 
 # image path
-clustered_path <- "results/Figure_4-clustered.png"
-original_path <- "results/Figure_4-original.png"
-ss_path <- "results/Figure_4-SS.png"
+clustered_path <- "results/Figure_S2-clustered.png"
+original_path <- "results/Figure_S2-original.png"
+ss_path <- "results/Figure_S2-SS.png"
 
 crop_image <- function(image_path, crop_width = 50, crop_height = 75) {
   img <- image_read(image_path)
@@ -442,6 +633,6 @@ final_plot <- row_plots / legend_plot +
 final_plot
 
 
-ggsave("results/Figure_4.pdf", final_plot, width = 7, height = 5.7, dpi = 600)
+ggsave("results/Figure_S2.pdf", final_plot, width = 7, height = 5.7, dpi = 600)
 
 
