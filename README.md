@@ -15,7 +15,7 @@ Datasets, codes, and numerical results for reproduce the results in "Transition-
 
 ### Reproduction Workflow
 
-**Note:** Simulation 4 corresponds to the comparison with BMC in the fully observed Markov-chain setting.
+**Note:** Simulation 4 corresponds to the comparison with BMC in the fully observed Markov-chain setting. CMC corresponds to the fully observed Markov-chain version of CHMM in Simulation 4.
 
 1. **Restore the R environment**
 
