@@ -1,6 +1,6 @@
-###########################################################################
-#### Code for reproduce the numerical results of Simulation 1,2, and 3 ####
-###########################################################################
+##########################################################################
+#### Code for reproduce the numerical results of Sensitivity analysis ####
+##########################################################################
 #### Preliminary ####
 # Load functions
 sapply(c("code/Functions/EM_MLE.R",
@@ -25,10 +25,10 @@ dist_class <- "mvnorm"
 
 #### 1) Well-separated transition matrix generator (A)   ####
 
-make_A_WS <- function(M, K, zeta){
+make_A <- function(M, K, zeta){
   # (1) Partition rule for well-separated rows
   # - K=3: M=10 -> (3,4,3), M=20 -> (6,8,6)
-  make_groups_WS <- function(M, K){
+  make_groups <- function(M, K){
     if (K == 3){
       if (M == 10) sizes <- c(3, 4, 3)
       else if (M == 20) sizes <- c(6, 8, 6)
@@ -64,7 +64,7 @@ make_A_WS <- function(M, K, zeta){
     return(A)
   }
   
-  groups <- make_groups_WS(M, K)
+  groups <- make_groups(M, K)
   B      <- make_block_uniform_B(M, groups)
   A      <- make_A_mix(B, zeta)
   return(list(A = A, groups = groups))
@@ -165,14 +165,14 @@ model_measurements <- function(data, dist_class, A_true, phi_true,
 }
 
 
-#### 4) One WS model runner (500 reps; n=5000 & 10000)     ####
+#### 4) One model runner (500 reps; n=5000 & 10000)     ####
 run_one_model <- function(model_name, seed_vec, m, K, zeta,
                           data_dim = 3, dist_class = "mvnorm",
                           n_list = c(5000, 10000),
                           size_full = 10000,
                           T_test = 10000){
   
-  A_obj  <- make_A_WS(M = m, K = K, zeta = zeta)
+  A_obj  <- make_A(M = m, K = K, zeta = zeta)
   A_true <- A_obj$A
   
   phi_true <- make_phi_true(m = m, data_dim = data_dim)
