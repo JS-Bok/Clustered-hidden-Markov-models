@@ -121,9 +121,9 @@ model_measurements <- function(data, dist_class, A_true, phi_true,
                                 initial_hmm = MLE_result)
   #saveRDS(MPLE_GLASSO_result, file = paste0("results/Simulation/", prefix, "-", t, "-GLASSO-", ord, ".rds"))
   
-  MPLE_GSCAD_result <- EM_MPLE(data, dist_class = dist_class, m = m,
-                               penalty_type = "group_scad",
-                               initial_hmm = MLE_result)
+  # MPLE_GSCAD_result <- EM_MPLE(data, dist_class = dist_class, m = m,
+  #                              penalty_type = "group_scad",
+  #                              initial_hmm = MLE_result)
   #saveRDS(MPLE_GSCAD_result, file = paste0("results/Simulation/", prefix, "-", t, "-GSCAD-", ord, ".rds"))
   
   ## ------------------------------------------------------------
@@ -162,7 +162,7 @@ model_measurements <- function(data, dist_class, A_true, phi_true,
   OE_val           <- extract_meas(OE_result)
   MLE_val          <- extract_meas(MLE_result)
   MPLE_GLASSO_val  <- extract_meas(MPLE_GLASSO_result)
-  MPLE_GSCAD_val   <- extract_meas(MPLE_GSCAD_result)
+  # MPLE_GSCAD_val   <- extract_meas(MPLE_GSCAD_result)
   MPLE_FSCAD_val   <- extract_meas(MPLE_FSCAD_result)
   MPLE_val         <- extract_meas(MPLE_result)
   
@@ -170,7 +170,7 @@ model_measurements <- function(data, dist_class, A_true, phi_true,
     OE          = OE_val,
     MLE         = MLE_val,
     MPLE_GLASSO = MPLE_GLASSO_val,
-    MPLE_GSCAD  = MPLE_GSCAD_val,
+    # MPLE_GSCAD  = MPLE_GSCAD_val,
     MPLE_FSCAD  = MPLE_FSCAD_val,
     MPLE        = MPLE_val
   ))
