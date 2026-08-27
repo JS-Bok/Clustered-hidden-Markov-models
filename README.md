@@ -40,4 +40,4 @@ Datasets, codes, and numerical results for reproduce the results in "Transition-
 
    Run `code/Real_data_analysis/Figure-Protein_structure_analysis.R`.
 
-   **Important**: Reproducing **Figure S2** requires a brief manual action. Please follow the instructions provided in the *####Code generating Figure 4####* section of `code/Real_data_analysis/Figure-Protein_structure_analysis.R` before running that part of the script.
+   **Important**: Reproducing **Figure S2** requires a brief manual action. Please follow the instructions provided in the *####Code generating Figure S2####* section of `code/Real_data_analysis/Figure-Protein_structure_analysis.R` before running that part of the script.
