@@ -1,6 +1,6 @@
-##################################################################
-#### Code for reproduce the numerical results of Simulation 4 ####
-##################################################################
+######################################################################################
+#### Code for reproduce the numerical results of Simulation 4 (Fully observed MC) ####
+######################################################################################
 #### Preliminary ####
 # Load functions
 sapply(c("code/Functions/BMC.R",
@@ -25,10 +25,10 @@ dist_class <- "mvnorm"
 
 #### 1) Well-separated transition matrix generator (A)   ####
 
-make_A_WS <- function(M, K, zeta){
+make_A <- function(M, K, zeta){
   # (1) Partition rule for well-separated rows
   # - K=3: M=10 -> (3,4,3), M=20 -> (6,8,6)
-  make_groups_WS <- function(M, K){
+  make_groups <- function(M, K){
     if (K == 3){
       if (M == 10) sizes <- c(3, 4, 3)
       else if (M == 20) sizes <- c(6, 8, 6)
@@ -64,7 +64,7 @@ make_A_WS <- function(M, K, zeta){
     return(A)
   }
   
-  groups <- make_groups_WS(M, K)
+  groups <- make_groups(M, K)
   B      <- make_block_uniform_B(M, groups)
   A      <- make_A_mix(B, zeta)
   return(list(A = A, groups = groups))
@@ -122,7 +122,7 @@ run_one_WS_model <- function(model_name, seed_vec, m, K, zeta,
                              n_list = c(5000, 10000), size_full = 10000){
   
   # Build A_true
-  A_obj  <- make_A_WS(M = m, K = K, zeta = zeta)
+  A_obj  <- make_A(M = m, K = K, zeta = zeta)
   A_true <- A_obj$A
   
   # Build emission
@@ -186,19 +186,19 @@ Sim4_WS_M3_BMC <- run_one_WS_model(model_name = "Sim4-M3", seed_vec = Model3_see
 Sim4_WS_M4_BMC <- run_one_WS_model(model_name = "Sim4-M4", seed_vec = Model4_seed, m = 20, K = 5, zeta = 0.8,
                                data_dim = data_dim, dist_class = dist_class)
 
-# Nearly-tied setting (zeta=0.2)
-Sim4_NT_M1_BMC <- run_one_WS_model(model_name = "Sim4-M1", seed_vec = Model1_seed, m = 10, K = 3, zeta = 0.2,
+# Less-separated setting (zeta=0.2)
+Sim4_LS_M1_BMC <- run_one_WS_model(model_name = "Sim4-M1", seed_vec = Model1_seed, m = 10, K = 3, zeta = 0.2,
                                data_dim = data_dim, dist_class = dist_class)
 
-Sim4_NT_M2_BMC <- run_one_WS_model(model_name = "Sim4-M2", seed_vec = Model2_seed, m = 10, K = 5, zeta = 0.2,
+Sim4_LS_M2_BMC <- run_one_WS_model(model_name = "Sim4-M2", seed_vec = Model2_seed, m = 10, K = 5, zeta = 0.2,
                                data_dim = data_dim, dist_class = dist_class)
 
-Sim4_NT_M3_BMC <- run_one_WS_model(model_name = "Sim4-M3", seed_vec = Model3_seed, m = 20, K = 3, zeta = 0.2,
+Sim4_LS_M3_BMC <- run_one_WS_model(model_name = "Sim4-M3", seed_vec = Model3_seed, m = 20, K = 3, zeta = 0.2,
                                data_dim = data_dim, dist_class = dist_class)
 
-Sim4_NT_M4_BMC <- run_one_WS_model(model_name = "Sim4-M4", seed_vec = Model4_seed, m = 20, K = 5, zeta = 0.2,
+Sim4_LS_M4_BMC <- run_one_WS_model(model_name = "Sim4-M4", seed_vec = Model4_seed, m = 20, K = 5, zeta = 0.2,
                                data_dim = data_dim, dist_class = dist_class)
 
 save(Sim4_WS_M1_BMC, Sim4_WS_M2_BMC, Sim4_WS_M3_BMC, Sim4_WS_M4_BMC, 
-     Sim4_NT_M1_BMC, Sim4_NT_M2_BMC, Sim4_NT_M3_BMC, Sim4_NT_M4_BMC, 
+     Sim4_LS_M1_BMC, Sim4_LS_M2_BMC, Sim4_LS_M3_BMC, Sim4_LS_M4_BMC, 
      file = "results/Simulation/Simulation4_results-BMC.Rdata")
