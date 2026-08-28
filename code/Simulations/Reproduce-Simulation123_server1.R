@@ -303,7 +303,7 @@ Sim3_M1 <- run_one_model(model_name = "Sim3-M1", seed_vec = Model1_seed, m = 10,
 Sim3_M4 <- run_one_model(model_name = "Sim3-M4", seed_vec = Model4_seed, m = 20, K = 20, zeta = 0.8,
                          n_list = c(20000),data_dim = data_dim, dist_class = dist_class)
 
-save(Sim3_M1, Sim3_M2, Sim3_M3, Sim3_M4, file = "results/Simulation/Simulation3_results_14.Rdata")
+save(Sim3_M1, Sim3_M4, file = "results/Simulation/Simulation3_results_14.Rdata")
 
 
 

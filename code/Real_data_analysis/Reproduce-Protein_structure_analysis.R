@@ -3,7 +3,7 @@
 ################################################################################
 #### Preliminary ####
 # Load functions
-sapply(c("code/functions/EM_MLE.R","code/functions/EM_MPLE.R","code/functions/EM_FHMM.R"), source)
+sapply(c("code/Functions/EM_MLE.R","code/functions/EM_MPLE.R"), source)
 
 
 # Load data
@@ -72,9 +72,9 @@ Protein_MPLE <- EM_MPLE(Protein_descriptor,
 #   ]]
 
 #### FHMM ####
-Protein_FHMM <- fhmm(Protein_descriptor, M=3, K=3,parameter = emission, tol=1e-5)
+# Protein_FHMM <- fhmm(Protein_descriptor, M=3, K=3,parameter = emission, tol=1e-5)
 
 
-save(Protein_MLE, Protein_MPLE, Protein_FHMM, file = "results/Protein_structure_analysis.Rdata")
-
+#save(Protein_MLE, Protein_MPLE, Protein_FHMM, file = "results/Protein_structure_analysis.Rdata")
+save(Protein_MLE, Protein_MPLE, file = "results/Protein_structure_analysis.Rdata")
 

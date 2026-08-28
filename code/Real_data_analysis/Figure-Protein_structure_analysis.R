@@ -14,7 +14,7 @@ library(NGLVieweR)
 
 
 # Load data
-source("code/functions/Auxiliary_Functions.R")
+source("code/Functions/Auxiliary_Functions.R")
 load("data/Protein_data.Rdata")
 load("results/Protein_structure_analysis.Rdata")
 

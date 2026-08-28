@@ -19,8 +19,8 @@
 # dist_class = distribution class of the emission distribution
 # Lambda = selected penalty parameter
 
-source("code/functions/Auxiliary_Functions.R")
-source("code/functions/EM_MLE.R")
+source("code/Functions/Auxiliary_Functions.R")
+source("code/Functions/EM_MLE.R")
 
 #### EM for MPLE ####
 EM_MPLE_singleLambda <- function(y,A=NULL,dist_class,parameter=NULL,Lambda, tol=1e-5, max_step=30,m=NULL, return_y=TRUE, penalty_type){

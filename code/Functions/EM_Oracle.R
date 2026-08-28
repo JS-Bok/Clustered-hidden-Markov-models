@@ -19,7 +19,7 @@
 # dist_class = distribution class of the emission distribution
 
 
-source("code/functions/Auxiliary_Functions.R")
+source("code/Functions/Auxiliary_Functions.R")
 
 
 EM_Oracle <- function(

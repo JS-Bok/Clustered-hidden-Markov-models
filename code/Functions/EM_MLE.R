@@ -16,7 +16,7 @@
 # dist_class = distribution class of the emission distribution
 
 
-source("code/functions/Auxiliary_Functions.R")
+source("code/Functions/Auxiliary_Functions.R")
 
 #### EM for MLE ####
 EM_MLE <- function(y,A=NULL,dist_class,parameter=NULL, tol=1e-6, m=NULL, max_step=1000){
