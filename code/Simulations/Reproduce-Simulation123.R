@@ -180,8 +180,8 @@ model_measurements <- function(data, dist_class, A_true, phi_true,
 #### 4) One model runner (500 reps; n=5000 & 10000)     ####
 run_one_model <- function(model_name, seed_vec, m, K, zeta,
                            data_dim = 3, dist_class = "mvnorm",
-                           n_list = c(5000, 10000),
-                           size_full = 10000,
+                           n_list = c(10000, 20000),
+                           size_full = 20000,
                            T_test = 10000){
   
   A_obj  <- make_A(M = m, K = K, zeta = zeta)
