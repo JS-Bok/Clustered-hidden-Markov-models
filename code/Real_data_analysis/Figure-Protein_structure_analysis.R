@@ -80,173 +80,228 @@ RC_seq_tmp2 <- mapply(function(original,clustered){data.frame(original=original,
 ## Reconstruction of hidden sequences in FHMM ##
 # Mu = Protein_FHMM$Mu
 # Cov = Protein_FHMM$Cov
-P = Protein_FHMM$P
-Pi = Protein_FHMM$Pi
-M=3
-K=3
+# P = Protein_FHMM$P
+# Pi = Protein_FHMM$Pi
+# M=3
+# K=3
+# 
+# A_fhmm <- P[(K*(M-1)+1):(K*M),]
+# for (i in (M-1):1) {
+#   A_fhmm <- kronecker(P[(K*(i-1)+1):(K*i),], A_fhmm)
+# }
+# 
+# parameter <- Protein_FHMM$par
+# 
+# em_mat_list <- lapply(y, em_prob_mat, x=Pi_hmm, dist_class=dist_class, parameter=parameter)
+# Vit_tmp <- function(y,em_mat){return(Viterbi(y,A_fhmm,em_mat))}
+# fhmm_rc <- mapply(Vit_tmp, y=y, em_mat=em_mat_list)
 
-A_fhmm <- P[(K*(M-1)+1):(K*M),]
-for (i in (M-1):1) {
-  A_fhmm <- kronecker(P[(K*(i-1)+1):(K*i),], A_fhmm)
-}
 
-parameter <- Protein_FHMM$par
-
-em_mat_list <- lapply(y, em_prob_mat, x=Pi_hmm, dist_class=dist_class, parameter=parameter)
-Vit_tmp <- function(y,em_mat){return(Viterbi(y,A_fhmm,em_mat))}
-fhmm_rc <- mapply(Vit_tmp, y=y, em_mat=em_mat_list)
-
-
-SS_match <- mapply(function(x,y,z){data.frame(original=x$original, clustered=x$clustered, fhmm=y,SS=z)},
-                   x=RC_seq_tmp2, y=fhmm_rc, z=SS_seq, SIMPLIFY = FALSE)
+SS_match <- mapply(function(x,z){data.frame(original=x$original, clustered=x$clustered,SS=z)},
+                   x=RC_seq_tmp2, z=SS_seq, SIMPLIFY = FALSE)
 
 
 
 #### Code generating Figure S3 ####
-plot_transition_heatmap <- function(sim_data, title_text) {
-  A <- sim_data$A*100
-  groups <- sim_data$groups
-  M <- nrow(A)
-  
-  rownames(A) <- 1:M
-  colnames(A) <- 1:M
-  df <- melt(A)
-  
-  group_ends <- sapply(groups, max)
-  lines_pos <- group_ends[-length(group_ends)] + 0.5
-  
-  text_size <- 3
-  p <- ggplot(df, aes(x = Var2, y = Var1, fill = value)) +
-    geom_tile(color = "white") +
-    geom_text(aes(label = sprintf("%.0f", value), 
-                  color = value > 50), 
-              size = text_size) +
-    scale_color_manual(values = c("TRUE" = "white", "FALSE" = "black"), guide = "none") +
-    scale_fill_gradient(low = "white", high = "#005293", limits = c(0, 100), name = "Probability(%)") +
-    scale_y_reverse(breaks = 1:M) +
-    scale_x_continuous(breaks = 1:M, position = "top") +
-    coord_fixed(ratio = 1) +
-    theme_minimal() +
-    theme(
-      panel.grid = element_blank(),
-      axis.title = element_blank(),
-      plot.title = element_text(hjust = 0.5, face = "bold", size = 11)
-    ) +
-    labs(title = title_text)
-  
-  p <- p +
-    geom_hline(yintercept = lines_pos, color = "black", linewidth = 0.6, linetype = "dashed") 
-  return(p)
-}
-
-figS3 <- plot_transition_heatmap(list(A=A,groups=cf(A)$index), title_text = NULL)
+# plot_transition_heatmap <- function(sim_data, title_text) {
+#   A <- sim_data$A*100
+#   groups <- sim_data$groups
+#   M <- nrow(A)
+#   
+#   rownames(A) <- 1:M
+#   colnames(A) <- 1:M
+#   df <- melt(A)
+#   
+#   group_ends <- sapply(groups, max)
+#   lines_pos <- group_ends[-length(group_ends)] + 0.5
+#   
+#   text_size <- 3
+#   p <- ggplot(df, aes(x = Var2, y = Var1, fill = value)) +
+#     geom_tile(color = "white") +
+#     geom_text(aes(label = sprintf("%.0f", value), 
+#                   color = value > 50), 
+#               size = text_size) +
+#     scale_color_manual(values = c("TRUE" = "white", "FALSE" = "black"), guide = "none") +
+#     scale_fill_gradient(low = "white", high = "#005293", limits = c(0, 100), name = "Probability(%)") +
+#     scale_y_reverse(breaks = 1:M) +
+#     scale_x_continuous(breaks = 1:M, position = "top") +
+#     coord_fixed(ratio = 1) +
+#     theme_minimal() +
+#     theme(
+#       panel.grid = element_blank(),
+#       axis.title = element_blank(),
+#       plot.title = element_text(hjust = 0.5, face = "bold", size = 11)
+#     ) +
+#     labs(title = title_text)
+#   
+#   p <- p +
+#     geom_hline(yintercept = lines_pos, color = "black", linewidth = 0.6, linetype = "dashed") 
+#   return(p)
+# }
+# 
+# figS3 <- plot_transition_heatmap(list(A=A,groups=cf(A)$index), title_text = NULL)
 
 
 
 #### Code generating Figure 2 ####
-SS_match_combined <- Reduce(rbind, SS_match) 
-
-SS_match_combined[SS_match_combined=="H"] <- "Alpha Helix"
-SS_match_combined[SS_match_combined=="I"] <- "Pi Helix"
-SS_match_combined[SS_match_combined=="G"] <- "3-10 Helix"
-SS_match_combined[SS_match_combined=="B"] <- "Isolated beta-bridge"
-SS_match_combined[SS_match_combined=="E"] <- "Extended strand"
-SS_match_combined[SS_match_combined=="T"] <- "Hydrogen bonded turn"
-SS_match_combined[SS_match_combined=="S"] <- "Bend"
-SS_match_combined[SS_match_combined=="-"] <- "Other or Coil"
-SS_match_combined[SS_match_combined=="n"] <- "Other or Coil"
-
-
-SS_match_combined$original <- as.factor(SS_match_combined$original)
-
-
-
-SS_match_combined$clustered <- as.factor(SS_match_combined$clustered)
-SS_match_combined$clustered <- sapply(SS_match_combined$clustered, function(x){return(paste("C",x,sep =""))})
-SS_match_combined$clustered <- as.factor(SS_match_combined$clustered)
-SS_match_combined$clustered <- factor(SS_match_combined$clustered, 
-                                      levels=c("C1",  "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", 
-                                               "C11",  "C12",  "C13",  "C14",  "C15",  "C16",  "C17", "C18", "C19", "C20"))
-
-
-
-max_y <- 4600
-
-K=3; M=3
-index_mat <- sapply(1:M, function(x){rep(1:K, K^(x-1), each=K^(M-x))})
-
-fhmm_x1 <- SS_match_combined$fhmm
-fhmm_x1[fhmm_x1 %in% which(index_mat[,1]==1)] <- 1
-fhmm_x1[fhmm_x1 %in% which(index_mat[,1]==2)] <- 2
-fhmm_x1[fhmm_x1 %in% which(index_mat[,1]==3)] <- 3
-
-SS_match_combined$fhmm_x1 <- fhmm_x1
-
-fhmm_x2 <- SS_match_combined$fhmm
-fhmm_x2[fhmm_x2 %in% which(index_mat[,2]==1)] <- 1
-fhmm_x2[fhmm_x2 %in% which(index_mat[,2]==2)] <- 2
-fhmm_x2[fhmm_x2 %in% which(index_mat[,2]==3)] <- 3
-
-SS_match_combined$fhmm_x2 <- fhmm_x2
-
-
-fhmm_x3 <- SS_match_combined$fhmm
-fhmm_x3[fhmm_x3 %in% which(index_mat[,3]==1)] <- 1
-fhmm_x3[fhmm_x3 %in% which(index_mat[,3]==2)] <- 2
-fhmm_x3[fhmm_x3 %in% which(index_mat[,3]==3)] <- 3
-
-
-SS_match_combined$fhmm_x3 <- fhmm_x3
+# SS_match_combined <- Reduce(rbind, SS_match) 
+# 
+# SS_match_combined[SS_match_combined=="H"] <- "Alpha Helix"
+# SS_match_combined[SS_match_combined=="I"] <- "Pi Helix"
+# SS_match_combined[SS_match_combined=="G"] <- "3-10 Helix"
+# SS_match_combined[SS_match_combined=="B"] <- "Isolated beta-bridge"
+# SS_match_combined[SS_match_combined=="E"] <- "Extended strand"
+# SS_match_combined[SS_match_combined=="T"] <- "Hydrogen bonded turn"
+# SS_match_combined[SS_match_combined=="S"] <- "Bend"
+# SS_match_combined[SS_match_combined=="-"] <- "Other or Coil"
+# SS_match_combined[SS_match_combined=="n"] <- "Other or Coil"
+# 
+# 
+# SS_match_combined$original <- as.factor(SS_match_combined$original)
+# 
+# 
+# 
+# SS_match_combined$clustered <- as.factor(SS_match_combined$clustered)
+# SS_match_combined$clustered <- sapply(SS_match_combined$clustered, function(x){return(paste("C",x,sep =""))})
+# SS_match_combined$clustered <- as.factor(SS_match_combined$clustered)
+# SS_match_combined$clustered <- factor(SS_match_combined$clustered, 
+#                                       levels=c("C1",  "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", 
+#                                                "C11",  "C12",  "C13",  "C14",  "C15",  "C16",  "C17", "C18", "C19", "C20"))
 
 
 
-max_y <- 15000
+# max_y <- 4600
+# 
+# K=3; M=3
+# index_mat <- sapply(1:M, function(x){rep(1:K, K^(x-1), each=K^(M-x))})
+# 
+# fhmm_x1 <- SS_match_combined$fhmm
+# fhmm_x1[fhmm_x1 %in% which(index_mat[,1]==1)] <- 1
+# fhmm_x1[fhmm_x1 %in% which(index_mat[,1]==2)] <- 2
+# fhmm_x1[fhmm_x1 %in% which(index_mat[,1]==3)] <- 3
+# 
+# SS_match_combined$fhmm_x1 <- fhmm_x1
+# 
+# fhmm_x2 <- SS_match_combined$fhmm
+# fhmm_x2[fhmm_x2 %in% which(index_mat[,2]==1)] <- 1
+# fhmm_x2[fhmm_x2 %in% which(index_mat[,2]==2)] <- 2
+# fhmm_x2[fhmm_x2 %in% which(index_mat[,2]==3)] <- 3
+# 
+# SS_match_combined$fhmm_x2 <- fhmm_x2
+# 
+# 
+# fhmm_x3 <- SS_match_combined$fhmm
+# fhmm_x3[fhmm_x3 %in% which(index_mat[,3]==1)] <- 1
+# fhmm_x3[fhmm_x3 %in% which(index_mat[,3]==2)] <- 2
+# fhmm_x3[fhmm_x3 %in% which(index_mat[,3]==3)] <- 3
+# 
+# 
+# SS_match_combined$fhmm_x3 <- fhmm_x3
+# 
 
-K <- 3
-M <- 3
+# 
+# max_y <- 15000
+# 
+# K <- 3
+# M <- 3
+# 
+# index_mat <- sapply(
+#   seq_len(M),
+#   function(j) {
+#     rep(
+#       seq_len(K),
+#       times = K^(j - 1),
+#       each  = K^(M - j)
+#     )
+#   }
+# )
+# 
+# fhmm_state_id <- as.integer(as.character(SS_match_combined$fhmm))
+# 
+# if (anyNA(fhmm_state_id) ||
+#     any(!fhmm_state_id %in% seq_len(nrow(index_mat)))) {
+#   stop("FHMM state labels must be integers from 1 to 27.")
+# }
+# 
+# SS_match_combined <- SS_match_combined %>%
+#   mutate(
+#     fhmm_x1 = factor(index_mat[fhmm_state_id, 1], levels = 1:3),
+#     fhmm_x2 = factor(index_mat[fhmm_state_id, 2], levels = 1:3),
+#     fhmm_x3 = factor(index_mat[fhmm_state_id, 3], levels = 1:3)
+#   )
+# 
+# fhmm_long <- SS_match_combined %>%
+#   select(SS, fhmm_x1, fhmm_x2, fhmm_x3) %>%
+#   pivot_longer(
+#     cols = starts_with("fhmm_x"),
+#     names_to = "chain",
+#     values_to = "state"
+#   ) %>%
+#   mutate(
+#     chain = factor(
+#       chain,
+#       levels = c("fhmm_x1", "fhmm_x2", "fhmm_x3"),
+#       labels = c("Chain 1", "Chain 2", "Chain 3")
+#     ),
+#     state = factor(as.character(state), levels = as.character(1:3))
+#   )
 
-index_mat <- sapply(
-  seq_len(M),
-  function(j) {
-    rep(
-      seq_len(K),
-      times = K^(j - 1),
-      each  = K^(M - j)
-    )
-  }
-)
+SS_match_combined <- Reduce(rbind, SS_match)
 
-fhmm_state_id <- as.integer(as.character(SS_match_combined$fhmm))
-
-if (anyNA(fhmm_state_id) ||
-    any(!fhmm_state_id %in% seq_len(nrow(index_mat)))) {
-  stop("FHMM state labels must be integers from 1 to 27.")
-}
+# Recode DSSP classes
 
 SS_match_combined <- SS_match_combined %>%
   mutate(
-    fhmm_x1 = factor(index_mat[fhmm_state_id, 1], levels = 1:3),
-    fhmm_x2 = factor(index_mat[fhmm_state_id, 2], levels = 1:3),
-    fhmm_x3 = factor(index_mat[fhmm_state_id, 3], levels = 1:3)
+    SS = recode(
+      as.character(SS),
+      H   = "Alpha Helix",
+      I   = "Pi Helix",
+      G   = "3-10 Helix",
+      B   = "Isolated beta-bridge",
+      E   = "Extended strand",
+      T   = "Hydrogen bonded turn",
+      S   = "Bend",
+      `-` = "Other or Coil",
+      n   = "Other or Coil",
+      .default = as.character(SS)
+    )
   )
 
-fhmm_long <- SS_match_combined %>%
-  select(SS, fhmm_x1, fhmm_x2, fhmm_x3) %>%
-  pivot_longer(
-    cols = starts_with("fhmm_x"),
-    names_to = "chain",
-    values_to = "state"
-  ) %>%
+ss_levels <- c(
+  "3-10 Helix",
+  "Alpha Helix",
+  "Bend",
+  "Extended strand",
+  "Hydrogen bonded turn",
+  "Isolated beta-bridge",
+  "Other or Coil",
+  "Pi Helix"
+)
+
+SS_match_combined <- SS_match_combined %>%
   mutate(
-    chain = factor(
-      chain,
-      levels = c("fhmm_x1", "fhmm_x2", "fhmm_x3"),
-      labels = c("Chain 1", "Chain 2", "Chain 3")
+    SS = factor(SS, levels = ss_levels),
+    
+    original = factor(
+      as.character(original),
+      levels = as.character(1:27)
     ),
-    state = factor(as.character(state), levels = as.character(1:3))
+    
+    clustered = factor(
+      paste0("C", as.character(clustered)),
+      levels = paste0("C", 1:20)
+    )
   )
 
-bar_width <- 0.82
+
+
+
+
+
+
+
+
+bar_width <- 0.8
 
 ss_fill_scale <- function() {
   scale_fill_discrete(
@@ -254,7 +309,7 @@ ss_fill_scale <- function() {
     limits = ss_levels,
     drop = FALSE,
     guide = guide_legend(
-      ncol = 2,
+      ncol = 1,
       byrow = TRUE
     )
   )
@@ -346,83 +401,82 @@ p_b <- ggplot(
   ) +
   theme_ss
 
-p_c <- ggplot(
-  fhmm_long,
-  aes(x = state, fill = SS)
-) +
-  geom_bar(
-    position = "stack",
-    width = bar_width
-  ) +
-  facet_grid(
-    cols = vars(chain)
-  ) +
-  scale_x_discrete(
-    expand = expansion(add = 0.5)
-  ) +
-  scale_y_continuous(
-    breaks = seq(0, 15000, by = 5000),
-    labels = scales::label_comma(),
-    expand = expansion(mult = c(0, 0.02))
-  ) +
-  coord_cartesian(
-    ylim = c(0, 15000),
-    clip = "off"
-  ) +
-  ss_fill_scale() +
-  labs(
-    x = "FHMM state",
-    y = "Count",
-    tag = "(c)"
-  ) +
-  theme_ss +
-  theme(
-    ## The gap between chains is intentionally larger than
-    ## the gap between states within a chain.
-    panel.spacing.x = unit(0.7, "lines")
-  )
+# p_c <- ggplot(
+#   fhmm_long,
+#   aes(x = state, fill = SS)
+# ) +
+#   geom_bar(
+#     position = "stack",
+#     width = bar_width
+#   ) +
+#   facet_grid(
+#     cols = vars(chain)
+#   ) +
+#   scale_x_discrete(
+#     expand = expansion(add = 0.5)
+#   ) +
+#   scale_y_continuous(
+#     breaks = seq(0, 15000, by = 5000),
+#     labels = scales::label_comma(),
+#     expand = expansion(mult = c(0, 0.02))
+#   ) +
+#   coord_cartesian(
+#     ylim = c(0, 15000),
+#     clip = "off"
+#   ) +
+#   ss_fill_scale() +
+#   labs(
+#     x = "FHMM state",
+#     y = "Count",
+#     tag = "(c)"
+#   ) +
+#   theme_ss +
+#   theme(
+#     ## The gap between chains is intentionally larger than
+#     ## the gap between states within a chain.
+#     panel.spacing.x = unit(0.7, "lines")
+#   )
 
 ## The full width corresponds to the 27 states in panel (a).
-total_span   <- 27L
-cluster_span <- 20L
+total_span   <- 27L+1
+cluster_span <- 20L+1
 
 ## Nine FHMM states plus additional space for two facet gaps
 ## and the wider y-axis labels.
-fhmm_span <- 11L
+# fhmm_span <- 11L
 
 figure_design <- c(
+  ## Panel (a): full width for 27 fine states
   area(
     t = 1, l = 1,
     b = 1, r = total_span
   ),
+  
+  ## Panel (b): width corresponding to 20 clusters
   area(
     t = 2, l = 1,
     b = 2, r = cluster_span
   ),
+  
+  ## Common legend in the remaining space
   area(
-    t = 3, l = 1,
-    b = 3, r = fhmm_span
-  ),
-  area(
-    t = 3, l = fhmm_span + 2,
-    b = 3, r = total_span
+    t = 2, l = cluster_span + 2,
+    b = 2, r = total_span
   )
 )
 
 protein_ss_figure <- wrap_plots(
   p_a,
   p_b,
-  p_c,
   guide_area(),
   design = figure_design,
-  heights = c(1, 1, 0.95),
+  heights = c(1, 1),
   guides = "collect"
 ) &
   theme(
     legend.position = "right",
-    legend.justification = "left",
+    legend.justification = "center",
     
-    ## Thin border around the entire legend
     legend.background = element_rect(
       fill = "white",
       colour = "grey30",
@@ -430,11 +484,10 @@ protein_ss_figure <- wrap_plots(
     ),
     
     legend.margin = margin(
-      t = 5, r = 7, b = 5, l = 7,
+      t = 5, r = 6, b = 5, l = 6,
       unit = "pt"
     ),
     
-    ## No borders around individual legend keys
     legend.key = element_rect(
       fill = NA,
       colour = NA
@@ -445,7 +498,7 @@ ggsave(
   filename = "results/Figure_2.pdf",
   plot = protein_ss_figure,
   width = 7.2,
-  height = 7.4,
+  height = 5.2,
   units = "in",
   device = grDevices::cairo_pdf
 )
@@ -453,186 +506,186 @@ ggsave(
 #### Code generating Figure S2 ####
 
 
-
-# Load 2PNE data
-pne <- SS_match[[136]]
-
-
-## Clusted
-
-c_1 <- which(pne$clustered==1)+1
-c_1_1 <- c_1[c_1<59]
-c_1_2 <- c_1[c_1>=59]
-
-c_1_1 <- sapply(c_1_1, function(x){paste(x,x+1,sep = "-")})
-c_1_1 <- paste(c_1_1, collapse = " or ")
-c_1_2 <- sapply(c_1_2, function(x){paste(x,x+1,sep = "-")})
-c_1_2 <- paste(c_1_2, collapse = " or ")
-
-NGLVieweR("2PNE") %>%
-  stageParameters(backgroundColor = "white") %>%
-  addRepresentation("backbone", param = list(
-    sele = "1-81",
-    colorScheme = "uniform",
-    radiusScale = 0.5  
-  )) %>%
-  addRepresentation("backbone", param = list(
-    sele = c_1_1,
-    colorValue = "red",
-    colorScheme = "uniform",
-    radiusScale = 2.0  
-  )) %>%
-  addRepresentation("backbone", param = list(
-    sele = c_1_2,
-    colorValue = "red",
-    colorScheme = "uniform",
-    radiusScale = 2.0  
-  )) 
-
-
-
-## Raw
-
-s_1 <- which(pne$original==1)+1
-s_1 <- sapply(s_1, function(x){paste(x,x+1,sep = "-")})
-s_3 <- which(pne$original==3)+1
-s_3 <- sapply(s_3, function(x){paste(x,x+1,sep = "-")})
-s_4 <- which(pne$original==4)+1
-s_4 <- sapply(s_4, function(x){paste(x,x+1,sep = "-")})
-s_1 <- paste(s_1, collapse = " or ")
-s_3 <- paste(s_3, collapse = " or ")
-s_4 <- paste(s_4, collapse = " or ")
-
-NGLVieweR("2PNE") %>%
-  stageParameters(backgroundColor = "white") %>%
-  addRepresentation("backbone", param = list(
-    sele = "1-81",
-    colorScheme = "uniform",
-    radiusScale = 0.5
-  )) %>%
-  addRepresentation("backbone", param = list(
-    sele = s_1,
-    colorValue = "purple", 
-    radiusScale = 2.0
-    # )) %>%
-    # addRepresentation("backbone", param = list(
-    #   sele = s_3,
-    #   colorValue = "lightblue", 
-    #   radiusScale = 2.0
-  )) %>%
-  addRepresentation("backbone", param = list(
-    sele = s_4,
-    colorValue = "#ff7f0e", 
-    radiusScale = 2.0
-  ))
-
-## Secondary Structure
-oc <- which(pne$SS=="-")+1
-oc <- sapply(oc, function(x){paste(x,x+1,sep = "-")})
-oc <- paste(oc, collapse = " or ")
-
-NGLVieweR("2PNE") %>%
-  stageParameters(backgroundColor = "white") %>%
-  addRepresentation("backbone",param = list(
-    sele = "1-81",
-    colorScheme = "uniform",
-    radiusScale = 0.5
-  ) )%>%
-  addRepresentation("backbone",
-                    param = list(
-                      sele = oc,
-                      colorValue = "#2ca02c",
-                      colorScheme = "uniform",
-                      radiusScale = 2.0
-                    ) 
-  )
-
-###------------------------------------------------------------------###
-###* We saved the four figures in result folder with size 350 X 550 *###
-###------------------------------------------------------------------###
-library(magick) 
-library(ggplot2)
-library(grid)
-library(patchwork)
-
-# image path
-clustered_path <- "results/Figure_S2-clustered.png"
-original_path <- "results/Figure_S2-original.png"
-ss_path <- "results/Figure_S2-SS.png"
-
-crop_image <- function(image_path, crop_width = 50, crop_height = 75) {
-  img <- image_read(image_path)
-  info <- image_info(img)
-  new_width <- info$width - (2 * crop_width)
-  new_height <- info$height - crop_height
-  image_crop(img, geometry = paste0(new_width, "x", new_height, "+", crop_width, "+0"))
-}
-
-ss_img <- crop_image(ss_path, crop_width = 10, crop_height = 50)
-original_img <- crop_image(original_path, crop_width = 10, crop_height = 50)
-clustered_img <- crop_image(clustered_path, crop_width = 10, crop_height = 50)
-
-scale_height <- function(image, scale_factor = 1.1) {
-  info <- image_info(image)
-  new_height <- as.integer(info$height * scale_factor) 
-  image_resize(image, paste0(info$width, "x", new_height, "!")) 
-}
-
-
-# Convert to ggplot object
-ss_plot <- ggplot() +
-  annotation_custom(rasterGrob(as.raster(ss_img), interpolate = TRUE),
-                    xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
-  theme_void()
-
-original_plot <- ggplot() +
-  annotation_custom(rasterGrob(as.raster(original_img), interpolate = TRUE),
-                    xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
-  theme_void()
-
-clustered_plot <- ggplot() +
-  annotation_custom(rasterGrob(as.raster(clustered_img), interpolate = TRUE),
-                    xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
-  theme_void()
-
-ss_plot        <- ss_plot        + ggtitle("(a) Secondary structure")
-original_plot  <- original_plot  + ggtitle("(b) Original state")
-clustered_plot <- clustered_plot + ggtitle("(c) Cluster")
-
-
-title_theme <- theme(
-  plot.title = element_text(hjust = .1),
-  plot.margin = margin(t = 5, r = 5, b = 5, l=0)
-)
-
-ss_plot        <- ss_plot        + title_theme
-original_plot  <- original_plot  + title_theme
-clustered_plot <- clustered_plot + title_theme
-
-legend_plot <- ggplot() +
-  geom_point(aes(x = 0,   y = 1.15), colour = "#2ca02c", size = 5) +
-  annotate("text", x = 0.1, y = 1.15, label = "Other or Coil", hjust = 0, size = 5) +
-  geom_point(aes(x = 1.1, y = 1.15), colour = "purple", size = 5) +
-  annotate("text", x = 1.2, y = 1.15, label = "State 1", hjust = 0, size = 5) +
-  # geom_point(aes(x = 1.1, y = 0.95), colour = "lightblue", size = 5) +
-  # annotate("text", x = 1.2, y = 0.95, label = "State 3", hjust = 0, size = 5) +
-  geom_point(aes(x = 1.1, y = 0.95), colour = "#ff7f0e", size = 5) +
-  annotate("text", x = 1.2, y = 0.95, label = "State 4", hjust = 0, size = 5) +
-  geom_point(aes(x = 2.2, y = 1.15), colour = "red", size = 5) +
-  annotate("text", x = 2.3, y = 1.15,
-           label = expression(Cluster~C[1]), hjust = 0, size = 5) +
-  xlim(0, 3) + ylim(0.5, 1.2) +
-  theme_void()
-
-
-row_plots <- (ss_plot | original_plot | clustered_plot) 
-
-final_plot <- row_plots / legend_plot +
-  plot_layout(heights = c(3, 1))
-
-final_plot
-
-
-ggsave("results/Figure_S2.pdf", final_plot, width = 7, height = 5.7, dpi = 600)
-
-
+# 
+# # Load 2PNE data
+# pne <- SS_match[[136]]
+# 
+# 
+# ## Clusted
+# 
+# c_1 <- which(pne$clustered==1)+1
+# c_1_1 <- c_1[c_1<59]
+# c_1_2 <- c_1[c_1>=59]
+# 
+# c_1_1 <- sapply(c_1_1, function(x){paste(x,x+1,sep = "-")})
+# c_1_1 <- paste(c_1_1, collapse = " or ")
+# c_1_2 <- sapply(c_1_2, function(x){paste(x,x+1,sep = "-")})
+# c_1_2 <- paste(c_1_2, collapse = " or ")
+# 
+# NGLVieweR("2PNE") %>%
+#   stageParameters(backgroundColor = "white") %>%
+#   addRepresentation("backbone", param = list(
+#     sele = "1-81",
+#     colorScheme = "uniform",
+#     radiusScale = 0.5  
+#   )) %>%
+#   addRepresentation("backbone", param = list(
+#     sele = c_1_1,
+#     colorValue = "red",
+#     colorScheme = "uniform",
+#     radiusScale = 2.0  
+#   )) %>%
+#   addRepresentation("backbone", param = list(
+#     sele = c_1_2,
+#     colorValue = "red",
+#     colorScheme = "uniform",
+#     radiusScale = 2.0  
+#   )) 
+# 
+# 
+# 
+# ## Raw
+# 
+# s_1 <- which(pne$original==1)+1
+# s_1 <- sapply(s_1, function(x){paste(x,x+1,sep = "-")})
+# s_3 <- which(pne$original==3)+1
+# s_3 <- sapply(s_3, function(x){paste(x,x+1,sep = "-")})
+# s_4 <- which(pne$original==4)+1
+# s_4 <- sapply(s_4, function(x){paste(x,x+1,sep = "-")})
+# s_1 <- paste(s_1, collapse = " or ")
+# s_3 <- paste(s_3, collapse = " or ")
+# s_4 <- paste(s_4, collapse = " or ")
+# 
+# NGLVieweR("2PNE") %>%
+#   stageParameters(backgroundColor = "white") %>%
+#   addRepresentation("backbone", param = list(
+#     sele = "1-81",
+#     colorScheme = "uniform",
+#     radiusScale = 0.5
+#   )) %>%
+#   addRepresentation("backbone", param = list(
+#     sele = s_1,
+#     colorValue = "purple", 
+#     radiusScale = 2.0
+#     # )) %>%
+#     # addRepresentation("backbone", param = list(
+#     #   sele = s_3,
+#     #   colorValue = "lightblue", 
+#     #   radiusScale = 2.0
+#   )) %>%
+#   addRepresentation("backbone", param = list(
+#     sele = s_4,
+#     colorValue = "#ff7f0e", 
+#     radiusScale = 2.0
+#   ))
+# 
+# ## Secondary Structure
+# oc <- which(pne$SS=="-")+1
+# oc <- sapply(oc, function(x){paste(x,x+1,sep = "-")})
+# oc <- paste(oc, collapse = " or ")
+# 
+# NGLVieweR("2PNE") %>%
+#   stageParameters(backgroundColor = "white") %>%
+#   addRepresentation("backbone",param = list(
+#     sele = "1-81",
+#     colorScheme = "uniform",
+#     radiusScale = 0.5
+#   ) )%>%
+#   addRepresentation("backbone",
+#                     param = list(
+#                       sele = oc,
+#                       colorValue = "#2ca02c",
+#                       colorScheme = "uniform",
+#                       radiusScale = 2.0
+#                     ) 
+#   )
+# 
+# ###------------------------------------------------------------------###
+# ###* We saved the four figures in result folder with size 350 X 550 *###
+# ###------------------------------------------------------------------###
+# library(magick) 
+# library(ggplot2)
+# library(grid)
+# library(patchwork)
+# 
+# # image path
+# clustered_path <- "results/Figure_S2-clustered.png"
+# original_path <- "results/Figure_S2-original.png"
+# ss_path <- "results/Figure_S2-SS.png"
+# 
+# crop_image <- function(image_path, crop_width = 50, crop_height = 75) {
+#   img <- image_read(image_path)
+#   info <- image_info(img)
+#   new_width <- info$width - (2 * crop_width)
+#   new_height <- info$height - crop_height
+#   image_crop(img, geometry = paste0(new_width, "x", new_height, "+", crop_width, "+0"))
+# }
+# 
+# ss_img <- crop_image(ss_path, crop_width = 10, crop_height = 50)
+# original_img <- crop_image(original_path, crop_width = 10, crop_height = 50)
+# clustered_img <- crop_image(clustered_path, crop_width = 10, crop_height = 50)
+# 
+# scale_height <- function(image, scale_factor = 1.1) {
+#   info <- image_info(image)
+#   new_height <- as.integer(info$height * scale_factor) 
+#   image_resize(image, paste0(info$width, "x", new_height, "!")) 
+# }
+# 
+# 
+# # Convert to ggplot object
+# ss_plot <- ggplot() +
+#   annotation_custom(rasterGrob(as.raster(ss_img), interpolate = TRUE),
+#                     xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+#   theme_void()
+# 
+# original_plot <- ggplot() +
+#   annotation_custom(rasterGrob(as.raster(original_img), interpolate = TRUE),
+#                     xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+#   theme_void()
+# 
+# clustered_plot <- ggplot() +
+#   annotation_custom(rasterGrob(as.raster(clustered_img), interpolate = TRUE),
+#                     xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+#   theme_void()
+# 
+# ss_plot        <- ss_plot        + ggtitle("(a) Secondary structure")
+# original_plot  <- original_plot  + ggtitle("(b) Original state")
+# clustered_plot <- clustered_plot + ggtitle("(c) Cluster")
+# 
+# 
+# title_theme <- theme(
+#   plot.title = element_text(hjust = .1),
+#   plot.margin = margin(t = 5, r = 5, b = 5, l=0)
+# )
+# 
+# ss_plot        <- ss_plot        + title_theme
+# original_plot  <- original_plot  + title_theme
+# clustered_plot <- clustered_plot + title_theme
+# 
+# legend_plot <- ggplot() +
+#   geom_point(aes(x = 0,   y = 1.15), colour = "#2ca02c", size = 5) +
+#   annotate("text", x = 0.1, y = 1.15, label = "Other or Coil", hjust = 0, size = 5) +
+#   geom_point(aes(x = 1.1, y = 1.15), colour = "purple", size = 5) +
+#   annotate("text", x = 1.2, y = 1.15, label = "State 1", hjust = 0, size = 5) +
+#   # geom_point(aes(x = 1.1, y = 0.95), colour = "lightblue", size = 5) +
+#   # annotate("text", x = 1.2, y = 0.95, label = "State 3", hjust = 0, size = 5) +
+#   geom_point(aes(x = 1.1, y = 0.95), colour = "#ff7f0e", size = 5) +
+#   annotate("text", x = 1.2, y = 0.95, label = "State 4", hjust = 0, size = 5) +
+#   geom_point(aes(x = 2.2, y = 1.15), colour = "red", size = 5) +
+#   annotate("text", x = 2.3, y = 1.15,
+#            label = expression(Cluster~C[1]), hjust = 0, size = 5) +
+#   xlim(0, 3) + ylim(0.5, 1.2) +
+#   theme_void()
+# 
+# 
+# row_plots <- (ss_plot | original_plot | clustered_plot) 
+# 
+# final_plot <- row_plots / legend_plot +
+#   plot_layout(heights = c(3, 1))
+# 
+# final_plot
+# 
+# 
+# ggsave("results/Figure_S2.pdf", final_plot, width = 7, height = 5.7, dpi = 600)
+# 
+# 
